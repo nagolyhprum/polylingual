@@ -1,7 +1,7 @@
 # polylingual
 Write code once, reuse it anywhere
 
-A simple programming api that allows you write javascript code. 
+A simple programming api that allows you write javascript code in order to generate code in other languages. 
 
 ```js
 

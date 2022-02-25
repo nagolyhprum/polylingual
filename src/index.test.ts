@@ -1,10 +1,12 @@
 import {
+	javascript,
+	kotlin,
+	swift,
 	declare,
 	set,
 	add,
 	code,
 	execute,
-	render as javascript,
 	result,
 	mult,
 	condition,
@@ -22,12 +24,6 @@ import {
 	gte,
 	defined
 } from "./";
-import {
-	render as kotlin
-} from "./kotlin";
-import {
-	render as swift
-} from "./swift";
 
 describe("language", () => {
 	it("works with object assign", () => {

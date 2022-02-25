@@ -746,114 +746,15 @@ const executeWithScope = (
 	return code;
 };
 
-const renderPath = (path: ProgrammingLanguage[], tabs: string) => {
-	return path.map((it, index) => {
-		if(typeof it === "string") return `${index ? "." : ""}${it}`;
-		return index ? `[${render(it, tabs)}]` : render(it, tabs);
-	}).join("");
-};
-
-export const render = (code: ProgrammingLanguage | undefined, tabs: string): string => {
-	if(code === null) return "null";
-	if(code === undefined) return "";
-	switch (code._name) {
-	case "condition": {
-		const otherwise = code.otherwise ? ` else {
-${render(code.otherwise, tabs + "\t")}
-${tabs}}` : "";
-		return `${tabs}if(${render(code.test, tabs)}) {
-${render(code.then, tabs + "\t")}
-${tabs}}${otherwise}`;
-	}
-	case "declare": {
-		const keys = Object.keys(code.variables);
-		const variables = keys.length ? `${tabs}var ${
-			keys.map((key) => {
-				// @ts-ignore
-				return `${key} = ${render(code.variables[key], tabs)}`;
-			})
-				.join(", ")};\n` : "";
-		const body = code.body.map(it => render(it, tabs)).join("\n");
-		return `${variables}${body}`;
-	}
-	case "set":
-		return `${tabs}${renderPath(code.variable, tabs)} = ${render(code.value, tabs)};`;
-	case "get":
-		return renderPath(code.variable, tabs);
-	case "invoke": {
-		const target = render(code.target, tabs);
-		const fun = code.fun;
-		const args = code.args.map(it => render(it, tabs));
-		const sideEffect = code.sideEffect;
-		return `${sideEffect ? tabs : ""}${target}${target ? "." : ""}${fun}(${args.join(", ")})${sideEffect ? ";" : ""}`;
-	}
-	case "not":
-		return `!(${render(code.item, tabs)})`;
-	case "add":
-		return "(" + code.items.map(it => render(it, tabs)).join(" + ") + ")";
-	case "sub":
-		return "(" + code.items.map(it => render(it, tabs)).join(" - ") + ")";
-	case "mult":
-		return "(" + code.items.map(it => render(it, tabs)).join(" * ") + ")";
-	case "div":
-		return "(" + code.items.map(it => render(it, tabs)).join(" / ") + ")";
-	case "or":
-		return "(" + code.items.map(it => render(it, tabs)).join(" || ") + ")";
-	case "and":
-		return "(" + code.items.map(it => render(it, tabs)).join(" && ") + ")";
-	case "gt":
-		return `(${render(code.a, tabs)} > ${render(code.b, tabs)})`;
-	case "lt":
-		return `(${render(code.a, tabs)} < ${render(code.b, tabs)})`;
-	case "gte":
-		return `(${render(code.a, tabs)} >= ${render(code.b, tabs)})`;
-	case "eq":
-		return `(${render(code.a, tabs)} === ${render(code.b, tabs)})`;
-	case "result":
-		return `${tabs}return ${render(code.value, tabs)};`;
-	case "fun": {
-		const body : string[] = [
-			...code.args.map(it => `${tabs}\tvar ${it} = args.${it};`),
-			render(code.body, `${tabs}\t`)
-		];
-		return `function (args) {
-${body.join("\n")}
-${tabs}}`;
-	}
-	case "defined": {
-		const value = render(code.item, "");
-		return `${value} !== undefined && ${value} !== null`;
-	}
-	case "fallback": {
-		const value = render(code.value, tabs);
-		const fallback = render(code.fallback, tabs);
-		return `(function(){var value = ${value};  return (value === null || value === undefined ? ${fallback} : value)})()`;
-	}
-	default:
-		// @ts-ignore
-		if(code instanceof Array) {
-			// @ts-ignore
-			return `[${code.map(it => render(it, tabs)).join(", ")}]`;
-		}
-		if(typeof code === "object") {
-			const keys = Object.keys(code);
-			return keys.length ? `{
-${tabs}\t${keys.map(key => `${wrapKey(key)}: ${render(code[key], `${tabs}\t`)}`).join(`,\n\t${tabs}`)}
-${tabs}}` : "{}";
-		}
-		return JSON.stringify(code);
-	}
-};
-
-const variableRegexp = /^[a-zA-Z_$][0-9a-zA-Z_$]*$/;
-
-const wrapKey = (input: string) => {
-	if(input.match(variableRegexp)) {
-		return input;
-	}
-	return `"${input}"`;
-};
-
-export {render as kotlin} from "./kotlin";
-export {render as swift} from "./swift";
-export const javascript = render;
+export {
+	render as kotlin,
+	bundle as kotlinBundle
+} from "./kotlin";
+export {
+	render as swift,
+	bundle as swiftBundle
+} from "./swift";
+export {
+	render as javascript,
+	bundle as javascriptBundle
+} from "./javascript";

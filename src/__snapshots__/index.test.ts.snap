@@ -635,7 +635,6 @@ invoke(
 						root : item,
 						path : []
 					)])
-					return state
 				},
 				Double(0)
 			]

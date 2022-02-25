@@ -17,7 +17,7 @@ export type UnderscoreProgramming = {
     every: <T>(items: T[], callback: (args: {
         item: T
     }) => ProgrammingLanguage) => boolean
-    forEach: <T, U>(items: T[], callback: (args: {
+    forEach: <T>(items: T[], callback: (args: {
         item: T
         index: number
     }) => ProgrammingLanguage) => void
