@@ -70,4 +70,4 @@ execute(sayHello, {
 
 ```
 
-Check out the [tests](https://github.com/nagolyhprum/polylingual/blob/main/LICENSE) for more examples.
+Check out the [tests](https://github.com/nagolyhprum/polylingual/blob/main/src/index.test.ts) for more examples.
