@@ -1,0 +1,903 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`everything renders javascript 1`] = `
+"console.log(\\"empties\\", {
+	array: [],
+	object: {},
+	undefined: null
+});
+console.log(name);
+name = \\"hi\\";
+console.log(name);
+console.log(deeply.nested.name);
+deeply.nested.name = \\"bye\\";
+console.log(deeply.nested.name);
+var diff = (a - b), product = (a * b), sum = (a + b), quotient = (a / b), gt = (a > b), notLt = !((a < b)), gte = (a >= b), eq = (a === b);
+console.log({
+	diff: diff,
+	sum: sum,
+	product: product,
+	quotient: quotient,
+	gt: gt,
+	notLt: notLt,
+	gte: gte,
+	eq: eq
+});
+console.log(_.reduce([1, 2, 3], function (args) {
+	var total = args.total;
+	var item = args.item;
+	return (total + item);
+}, 0));
+console.log((function(){var value = value;  return (value === null || value === undefined ? \\"world\\" : value)})());
+console.log((function(){var value = null;  return (value === null || value === undefined ? \\"world\\" : value)})());
+console.log({
+	yesAndNo: (deeply.nested.yes && deeply.nested.no),
+	yesOrNo: (deeply.nested.yes || deeply.nested.no)
+});
+if(name !== undefined && name !== null) {
+	console.log(\\"name is defined\\");
+} else {
+	console.log(\\"name is not defined\\");
+}
+if(!(name !== undefined && name !== null)) {
+	console.log(\\"should not happen\\");
+}"
+`;
+
+exports[`everything renders kotlin 1`] = `
+"invoke(
+	get(
+		listOf(
+			console
+		)
+	),
+	\\"log\\",
+	listOf(
+		\\"empties\\",
+		mutableMapOf<String, Any?>(
+			\\"array\\" to mutableListOf<Any?>(),
+			\\"object\\" to mutableMapOf<String, Any?>(),
+			\\"undefined\\" to null
+		)
+	)
+)
+invoke(
+	get(
+		listOf(
+			console
+		)
+	),
+	\\"log\\",
+	listOf(
+		get(
+			listOf(
+				name
+			)
+		)
+	)
+)
+name = set(
+	listOf(
+		name,
+		
+	),
+	\\"hi\\"
+)
+invoke(
+	get(
+		listOf(
+			console
+		)
+	),
+	\\"log\\",
+	listOf(
+		get(
+			listOf(
+				name
+			)
+		)
+	)
+)
+invoke(
+	get(
+		listOf(
+			console
+		)
+	),
+	\\"log\\",
+	listOf(
+		get(
+			listOf(
+				deeply,
+				\\"nested\\", \\"name\\"
+			)
+		)
+	)
+)
+set(
+	listOf(
+		deeply,
+		\\"nested\\",
+			\\"name\\"
+	),
+	\\"bye\\"
+)
+invoke(
+	get(
+		listOf(
+			console
+		)
+	),
+	\\"log\\",
+	listOf(
+		get(
+			listOf(
+				deeply,
+				\\"nested\\", \\"name\\"
+			)
+		)
+	)
+)
+var diff: Any? = sub(get(
+	listOf(
+		a
+	)
+), get(
+	listOf(
+		b
+	)
+))
+var product: Any? = mult(get(
+	listOf(
+		a
+	)
+), get(
+	listOf(
+		b
+	)
+))
+var sum: Any? = add(get(
+	listOf(
+		a
+	)
+), get(
+	listOf(
+		b
+	)
+))
+var quotient: Any? = div(get(
+	listOf(
+		a
+	)
+), get(
+	listOf(
+		b
+	)
+))
+var gt: Any? = gt(get(
+	listOf(
+		a
+	)
+), get(
+	listOf(
+		b
+	)
+))
+var notLt: Any? = not(lt(get(
+	listOf(
+		a
+	)
+), get(
+	listOf(
+		b
+	)
+)))
+var gte: Any? = gte(get(
+	listOf(
+		a
+	)
+), get(
+	listOf(
+		b
+	)
+))
+var eq: Any? = (get(
+	listOf(
+		a
+	)
+) == get(
+	listOf(
+		b
+	)
+))
+invoke(
+	get(
+		listOf(
+			console
+		)
+	),
+	\\"log\\",
+	listOf(
+		mutableMapOf<String, Any?>(
+			\\"diff\\" to get(
+				listOf(
+					diff
+				)
+			),
+			\\"sum\\" to get(
+				listOf(
+					sum
+				)
+			),
+			\\"product\\" to get(
+				listOf(
+					product
+				)
+			),
+			\\"quotient\\" to get(
+				listOf(
+					quotient
+				)
+			),
+			\\"gt\\" to get(
+				listOf(
+					gt
+				)
+			),
+			\\"notLt\\" to get(
+				listOf(
+					notLt
+				)
+			),
+			\\"gte\\" to get(
+				listOf(
+					gte
+				)
+			),
+			\\"eq\\" to get(
+				listOf(
+					eq
+				)
+			)
+		)
+	)
+)
+invoke(
+	get(
+		listOf(
+			console
+		)
+	),
+	\\"log\\",
+	listOf(
+		invoke(
+			get(
+				listOf(
+					Underscore
+				)
+			),
+			\\"reduce\\",
+			listOf(
+				mutableListOf<Any?>(
+					(1).toDouble(),
+					(2).toDouble(),
+					(3).toDouble()
+				),
+				object : ArgumentCallback {
+					override fun invoke(args: Any?): Any? {
+						val total = get(listOf(args, \\"total\\"))
+						val item = get(listOf(args, \\"item\\"))
+						return add(get(
+							listOf(
+								total
+							)
+						), get(
+							listOf(
+								item
+							)
+						))
+						return state
+					}
+				},
+				(0).toDouble()
+			)
+		)
+	)
+)
+invoke(
+	get(
+		listOf(
+			console
+		)
+	),
+	\\"log\\",
+	listOf(
+		get(
+			listOf(
+				(get(
+					listOf(
+						value
+					)
+				) ?: \\"world\\")
+			)
+		)
+	)
+)
+invoke(
+	get(
+		listOf(
+			console
+		)
+	),
+	\\"log\\",
+	listOf(
+		get(
+			listOf(
+				(null ?: \\"world\\")
+			)
+		)
+	)
+)
+invoke(
+	get(
+		listOf(
+			console
+		)
+	),
+	\\"log\\",
+	listOf(
+		mutableMapOf<String, Any?>(
+			\\"yesAndNo\\" to get(
+				listOf(
+					deeply,
+					\\"nested\\", \\"yes\\"
+				)
+			).and(get(
+				listOf(
+					deeply,
+					\\"nested\\", \\"no\\"
+				)
+			)),
+			\\"yesOrNo\\" to get(
+				listOf(
+					deeply,
+					\\"nested\\", \\"yes\\"
+				)
+			).or(get(
+				listOf(
+					deeply,
+					\\"nested\\", \\"no\\"
+				)
+			))
+		)
+	)
+)
+if(hasValue((get(
+	listOf(
+		name
+	)
+) !== null))) {
+	invoke(
+		get(
+			listOf(
+				console
+			)
+		),
+		\\"log\\",
+		listOf(
+			\\"name is defined\\"
+		)
+	)
+} else {
+	invoke(
+		get(
+			listOf(
+				console
+			)
+		),
+		\\"log\\",
+		listOf(
+			\\"name is not defined\\"
+		)
+	)
+}
+if(hasValue(not((get(
+	listOf(
+		name
+	)
+) !== null)))) {
+	invoke(
+		get(
+			listOf(
+				console
+			)
+		),
+		\\"log\\",
+		listOf(
+			\\"should not happen\\"
+		)
+	)
+}"
+`;
+
+exports[`everything renders swift 1`] = `
+"invoke(
+	target : get(
+		root : console,
+		path : []
+	),
+	name : \\"log\\",
+	args : [
+		\\"empties\\",
+		[
+			\\"array\\" : [],
+			\\"object\\" : [:],
+			\\"undefined\\" : nil
+		]
+	]
+)
+invoke(
+	target : get(
+		root : console,
+		path : []
+	),
+	name : \\"log\\",
+	args : [
+		get(
+			root : name,
+			path : []
+		)
+	]
+)
+name = set(
+	root : name,
+	path : [
+		
+	],
+	value: \\"hi\\"
+)
+invoke(
+	target : get(
+		root : console,
+		path : []
+	),
+	name : \\"log\\",
+	args : [
+		get(
+			root : name,
+			path : []
+		)
+	]
+)
+invoke(
+	target : get(
+		root : console,
+		path : []
+	),
+	name : \\"log\\",
+	args : [
+		get(
+			root : deeply,
+			path : [
+				\\"nested\\", \\"name\\"
+			]
+		)
+	]
+)
+deeply = set(
+	root : deeply,
+	path : [
+		\\"nested\\",
+			\\"name\\"
+	],
+	value: \\"bye\\"
+)
+invoke(
+	target : get(
+		root : console,
+		path : []
+	),
+	name : \\"log\\",
+	args : [
+		get(
+			root : deeply,
+			path : [
+				\\"nested\\", \\"name\\"
+			]
+		)
+	]
+)
+var diff: Any? = sub(input : [get(
+	root : a,
+	path : []
+), get(
+	root : b,
+	path : []
+)])
+var product: Any? = mult(input : [get(
+	root : a,
+	path : []
+), get(
+	root : b,
+	path : []
+)])
+var sum: Any? = add(input : [get(
+	root : a,
+	path : []
+), get(
+	root : b,
+	path : []
+)])
+var quotient: Any? = div(input : [get(
+	root : a,
+	path : []
+), get(
+	root : b,
+	path : []
+)])
+var gt: Any? = gt(a : get(
+	root : a,
+	path : []
+), b : get(
+	root : b,
+	path : []
+))
+var notLt: Any? = not(input : lt(a : get(
+	root : a,
+	path : []
+), b : get(
+	root : b,
+	path : []
+)))
+var gte: Any? = gte(a : get(
+	root : a,
+	path : []
+), b : get(
+	root : b,
+	path : []
+))
+var eq: Any? = equals(a : get(
+	root : a,
+	path : []
+), b : get(
+	root : b,
+	path : []
+))
+invoke(
+	target : get(
+		root : console,
+		path : []
+	),
+	name : \\"log\\",
+	args : [
+		[
+			\\"diff\\" : get(
+				root : diff,
+				path : []
+			),
+			\\"sum\\" : get(
+				root : sum,
+				path : []
+			),
+			\\"product\\" : get(
+				root : product,
+				path : []
+			),
+			\\"quotient\\" : get(
+				root : quotient,
+				path : []
+			),
+			\\"gt\\" : get(
+				root : gt,
+				path : []
+			),
+			\\"notLt\\" : get(
+				root : notLt,
+				path : []
+			),
+			\\"gte\\" : get(
+				root : gte,
+				path : []
+			),
+			\\"eq\\" : get(
+				root : eq,
+				path : []
+			)
+		]
+	]
+)
+invoke(
+	target : get(
+		root : console,
+		path : []
+	),
+	name : \\"log\\",
+	args : [
+		invoke(
+			target : get(
+				root : ProgrammingUnderscore,
+				path : []
+			),
+			name : \\"reduce\\",
+			args : [
+				[
+					Double(1),
+					Double(2),
+					Double(3)
+				],
+				{ (args : Any?) -> Any? in
+					var total = get(root : args, path : [\\"total\\"])
+					var item = get(root : args, path : [\\"item\\"])
+					return add(input : [get(
+						root : total,
+						path : []
+					), get(
+						root : item,
+						path : []
+					)])
+					return state
+				},
+				Double(0)
+			]
+		)
+	]
+)
+invoke(
+	target : get(
+		root : console,
+		path : []
+	),
+	name : \\"log\\",
+	args : [
+		get(
+			root : get(
+					root : value,
+					path : []
+				) ?? \\"world\\",
+			path : []
+		)
+	]
+)
+invoke(
+	target : get(
+		root : console,
+		path : []
+	),
+	name : \\"log\\",
+	args : [
+		get(
+			root : nil ?? \\"world\\",
+			path : []
+		)
+	]
+)
+invoke(
+	target : get(
+		root : console,
+		path : []
+	),
+	name : \\"log\\",
+	args : [
+		[
+			\\"yesAndNo\\" : (get(
+				root : deeply,
+				path : [
+					\\"nested\\", \\"yes\\"
+				]
+			) && get(
+				root : deeply,
+				path : [
+					\\"nested\\", \\"no\\"
+				]
+			)),
+			\\"yesOrNo\\" : (get(
+				root : deeply,
+				path : [
+					\\"nested\\", \\"yes\\"
+				]
+			) || get(
+				root : deeply,
+				path : [
+					\\"nested\\", \\"no\\"
+				]
+			))
+		]
+	]
+)
+if(hasValue(input : hasValue(input : get(
+	root : name,
+	path : []
+)))) {
+	invoke(
+		target : get(
+			root : console,
+			path : []
+		),
+		name : \\"log\\",
+		args : [
+			\\"name is defined\\"
+		]
+	)
+} else {
+	invoke(
+		target : get(
+			root : console,
+			path : []
+		),
+		name : \\"log\\",
+		args : [
+			\\"name is not defined\\"
+		]
+	)
+}
+if(hasValue(input : not(input : hasValue(input : get(
+	root : name,
+	path : []
+))))) {
+	invoke(
+		target : get(
+			root : console,
+			path : []
+		),
+		name : \\"log\\",
+		args : [
+			\\"should not happen\\"
+		]
+	)
+}"
+`;
+
+exports[`language allows indexing of variables and numbers 1`] = `
+"console.log(state.data[1]);
+console.log(state.data[state.index]);
+state.data[0] = \\"-a\\";
+state.data[state.index] = \\"-c\\";"
+`;
+
+exports[`language allows just true 1`] = `"return true;"`;
+
+exports[`language allows renames of declare 1`] = `
+"var a = 0;
+var b = a;
+console.log(b);"
+`;
+
+exports[`language allows renames of functions 1`] = `
+"_.map([], function (args) {
+	var item = args.item;
+	var string = item;
+	console.log(string);
+})"
+`;
+
+exports[`language basic setup works 1`] = `
+"var a = 0, b = 0;
+a = 1.1;
+b = 2.9;
+console.log(\\"test\\", (Math.round(a) + Math.floor(b)));"
+`;
+
+exports[`language can get length from a chain 1`] = `
+"var length = _.filter([true, false], function (args) {
+	var item = args.item;
+	return item;
+}).length;
+console.log(length);"
+`;
+
+exports[`language can set a string 1`] = `"ref.value = \\"value\\";"`;
+
+exports[`language can symbol and fallback on functions 1`] = `
+"console.log((function(){var value = _.filter([], function (args) {
+	var item = args.item;
+	return item;
+})[0];  return (value === null || value === undefined ? true : value)})());"
+`;
+
+exports[`language chains functions 1`] = `"(\\"_\\" + Math.random().toString(16).substr(2) + Date.now().toString(16))"`;
+
+exports[`language chains on symbol 1`] = `
+"console.log(state.data[0].content);
+console.log(state.data[state.index].content);"
+`;
+
+exports[`language fallback can be a symbol target 1`] = `"console.log((function(){var value = object;  return (value === null || value === undefined ? {} : value)})().a);"`;
+
+exports[`language fallback is chainable 1`] = `"console.log((function(){var value = object;  return (value === null || value === undefined ? {} : value)})().a);"`;
+
+exports[`language generates code for explicit setter 1`] = `"state.holder = state.value;"`;
+
+exports[`language handles - in property names 1`] = `
+"console.log({
+	\\"a-b\\": \\"a-b\\",
+	a: \\"a\\"
+});"
+`;
+
+exports[`language passes functions to objects 1`] = `
+"console.log({
+	callback: function (args) {
+		console.log(\\"HERE\\");
+	}
+});"
+`;
+
+exports[`language support modified chaining 1`] = `
+"var number = 0, key = \\"\\";
+number = Math.random();
+key = number.toString(16);
+number = Date.now();
+key = (\\"_\\" + key.substr(2) + number.toString(16));"
+`;
+
+exports[`language supports complicated setups 1`] = `
+"if(!((state.add_list === \\"\\"))) {
+	var route = \\"\\", key = \\"\\";
+	key = (\\"_\\" + Date.now().toString(16) + Math.random().toString(16).substr(2));
+	route = state.routes[(state.routes.length - 2)].adapter;
+	if((route === \\"list\\")) {
+		state.list = key;
+	}
+	if((route === \\"task\\")) {
+		state.task.list = key;
+	}
+	state.lists = _.concat(state.lists, [{
+		name: state.add_list,
+		key: key
+	}]);
+	navigation.pop();
+}"
+`;
+
+exports[`language supports conditions 1`] = `
+"if((state.a > state.b)) {
+	console.log(\\"a is bigger than b\\");
+} else {
+	console.log(\\"b is bigger than a\\");
+}"
+`;
+
+exports[`language supports declares with code 1`] = `
+"var list = _.find(state.lists, function (args) {
+	var item = args.item;
+	return (item.key === local.list);
+}, {
+	key: \\"\\",
+	name: \\"\\"
+});
+if(!((local.list === \\"\\"))) {
+	component.visible = true;
+	component.text = list.name;
+} else {
+	component.visible = false;
+}"
+`;
+
+exports[`language supports functions as arguments 1`] = `
+"_.map(state.numbers, function (args) {
+	var item = args.item;
+	return (item * 2);
+})"
+`;
+
+exports[`language supports timeout 1`] = `
+"setTimeout(function (args) {
+	console.log(\\"test\\");
+}, 300)"
+`;
+
+exports[`language works for deeply nested conditions 1`] = `
+"state.data = _.map(state.data, function (args) {
+	var item = args.item;
+	if((item.key === local.key)) {
+		return {
+			key: item.key,
+			content: event.value
+		};
+	} else {
+		return item;
+	}
+});"
+`;
+
+exports[`language works with object assign 1`] = `"component.background = \\"white\\";"`;
