@@ -22,7 +22,8 @@ import {
 	or,
 	lt,
 	gte,
-	defined
+	defined,
+	functions
 } from "./";
 
 describe("language", () => {
@@ -703,6 +704,23 @@ describe("language", () => {
 		});
 		expect(log).toBeCalledWith(true);
 		expect(log).toBeCalledTimes(1);
+	});
+	it("supports function declaration", () => {
+		const dependencies = new Set([]);
+		const declarations = functions({
+			sum : ({
+				a,
+				b
+			} : {
+				a : number
+				b : number
+			}) : number => result(add(a, b))
+		});
+		const output = code(() => block([
+			declarations,
+			declarations.sum({ a : 1, b : 2 })
+		]), dependencies);
+		expect(javascript(output, "")).toMatchSnapshot();
 	});
 });
 

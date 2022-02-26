@@ -872,6 +872,18 @@ if(!((local.list === \\"\\"))) {
 }"
 `;
 
+exports[`language supports function declaration 1`] = `
+"function sum(args) {
+	var a = args.a;
+	var b = args.b;
+	return (a + b);
+}
+sum({
+	a: 1,
+	b: 2
+})"
+`;
+
 exports[`language supports functions as arguments 1`] = `
 "_.map(state.numbers, function (args) {
 	var item = args.item;

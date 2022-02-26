@@ -127,6 +127,7 @@ const useCode = (it: unknown): any => {
 		}));
 		return {
 			_name: "fun",
+			name: "",
 			args: Array.from(dependencies).filter(it => !it.includes(".")),
 			body: useCode(body)
 		};
@@ -134,8 +135,8 @@ const useCode = (it: unknown): any => {
 	return it;
 };
 
-export const condition = (test: boolean, then: ProgrammingLanguage): ProgrammingLanguage & {
-	otherwise: (otherwise: ProgrammingLanguage) => ProgrammingLanguage
+export const condition = <T>(test: boolean, then: T): T & {
+	otherwise: (otherwise: T) => T
 } => {
 	return {
 		// @ts-ignore
@@ -144,14 +145,16 @@ export const condition = (test: boolean, then: ProgrammingLanguage): Programming
 			test: useCode(test),
 			then: useCode(then)
 		},
-		otherwise: (otherwise: ProgrammingLanguage) => ({
+		otherwise: (otherwise: T) => ({
 			_code: {
 				_name: "condition",
 				test: useCode(test),
 				then: useCode(then),
 				otherwise: useCode(otherwise)
 			}
-		}) as unknown as ProgrammingLanguage
+		}) as unknown as T
+	} as unknown as T & {
+		otherwise: (otherwise: T) => T
 	};
 };
 
@@ -373,11 +376,11 @@ export const fallback = <T>(value: T | null | undefined, fallback: T): T => {
 	});
 };
 
-export const result = (input?: unknown): ProgrammingLanguage => {
+export const result = <T>(input?: T): T => {
 	return {
 		_name: "result",
 		value: useCode(input)
-	};
+	} as unknown as T;
 };
 
 export const set = <T>(variable: T, value: T): ProgrammingLanguage => {
@@ -758,3 +761,35 @@ export {
 	render as javascript,
 	bundle as javascriptBundle
 } from "./javascript";
+
+
+export const functions = <T>(functions : T) : T => {
+	const ret : Record<string, any> = {
+		_name: "declare",
+		variables: {},
+		body: [] as any
+	};
+
+	Object.keys(functions).forEach(key => {
+		const func = (functions as any)[key];
+		const dependencies = new Set<string>([]);
+		const body = func(proxy({
+			scope : {},
+			path : [],
+			dependencies
+		}));
+		ret.body.push({
+			_name: "fun",
+			body,
+			name : key,
+			args : Array.from(dependencies)
+		});
+		ret[key] = (args : any) => invoke({
+			args : [args],
+			fun : key,
+			sideEffect: false,
+			target: undefined
+		});
+	});
+	return ret as any;
+};
