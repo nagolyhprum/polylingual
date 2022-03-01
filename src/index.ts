@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/ban-ts-comment */
 
-import { ProgrammingConsole, ProgrammingDate, ProgrammingFetch, ProgrammingJSON, ProgrammingLanguage, ProgrammingTimeout, UnderscoreProgramming } from "./types";
+import { ProgrammingConsole, ProgrammingDate, ProgrammingFetch, ProgrammingJSON, ProgrammingLanguage, ProgrammingTimeout, ProgrammingUnderscore } from "./types";
 
 const wrapResult = (result: unknown): unknown => {
 	if(typeof result === "string") {
@@ -177,7 +177,7 @@ export const code = <T = unknown>(callback: (scope: {
 	Date: ProgrammingDate
 	setTimeout: ProgrammingTimeout
 	JSON: ProgrammingJSON
-	_: UnderscoreProgramming
+	_: ProgrammingUnderscore
 	fetch: ProgrammingFetch
 } & T) => unknown, dependencies: Set<string>, scope?: T): ProgrammingLanguage => {
 	return useCode(callback(

@@ -1,4 +1,4 @@
-export type UnderscoreProgramming = {  
+export type ProgrammingUnderscore = {  
     toLowerCase: (input : string) => string,
     split: (input : string, token : string) => string[],
     toString: (input : unknown) => string  
