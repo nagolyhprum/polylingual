@@ -135,8 +135,8 @@ const useCode = (it: unknown): any => {
 	return it;
 };
 
-export const condition = <T>(test: boolean, then: T): T & {
-	otherwise: (otherwise: T) => T
+export const condition = (test: boolean, then: ProgrammingLanguage): ProgrammingLanguage & {
+	otherwise: (otherwise: ProgrammingLanguage) => ProgrammingLanguage
 } => {
 	return {
 		// @ts-ignore
@@ -145,16 +145,14 @@ export const condition = <T>(test: boolean, then: T): T & {
 			test: useCode(test),
 			then: useCode(then)
 		},
-		otherwise: (otherwise: T) => ({
+		otherwise: (otherwise: ProgrammingLanguage) => ({
 			_code: {
 				_name: "condition",
 				test: useCode(test),
 				then: useCode(then),
 				otherwise: useCode(otherwise)
 			}
-		}) as unknown as T
-	} as unknown as T & {
-		otherwise: (otherwise: T) => T
+		}) as unknown as ProgrammingLanguage
 	};
 };
 
@@ -376,11 +374,11 @@ export const fallback = <T>(value: T | null | undefined, fallback: T): T => {
 	});
 };
 
-export const result = <T>(input?: T): T => {
+export const result = (input?: unknown): ProgrammingLanguage => {
 	return {
 		_name: "result",
 		value: useCode(input)
-	} as unknown as T;
+	};
 };
 
 export const set = <T>(variable: T, value: T): ProgrammingLanguage => {
@@ -394,9 +392,7 @@ export const set = <T>(variable: T, value: T): ProgrammingLanguage => {
 	};
 };
 
-export const declare = <T extends {
-	[key: string]: unknown
-}>(callback: (input: T) => unknown[], variables: T): ProgrammingLanguage => {
+export const declare = <T extends Record<string, unknown>>(callback: (input: T) => unknown[], variables: T): ProgrammingLanguage => {
 	const scope = Object.keys(variables).reduce((variables, key) => {
 		// @ts-ignore
 		variables[key] = useCode(variables[key]);

@@ -714,7 +714,7 @@ describe("language", () => {
 			} : {
 				a : number
 				b : number
-			}) : number => result(add(a, b))
+			}) => result(add(a, b))
 		});
 		const output = code(() => block([
 			declarations,

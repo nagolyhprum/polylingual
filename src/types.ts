@@ -7,16 +7,16 @@ export type ProgrammingUnderscore = {
     reduce: <T, U>(items: T[], callback: (args: {
         item: T,
         total: U
-    }) => U, initial: U) => U
+    }) => ProgrammingLanguage, initial: U) => U
     indexOf: <T>(items: T[], callback: (args: {
         item: T
     }) => boolean) => number
     some: <T>(items: T[], callback: (args: {
         item: T
-    }) => boolean) => boolean
+    }) => ProgrammingLanguage) => boolean
     every: <T>(items: T[], callback: (args: {
         item: T
-    }) => boolean) => boolean
+    }) => ProgrammingLanguage) => boolean
     forEach: <T>(items: T[], callback: (args: {
         item: T
         index: number
@@ -25,20 +25,20 @@ export type ProgrammingUnderscore = {
         item: T
         index: number
         items : T[]
-    }) => U) => U[]
+    }) => ProgrammingLanguage) => U[]
     filter: <T>(items: T[], callback: (args: {
         item: T
-    }) => boolean) => T[]
+    }) => ProgrammingLanguage) => T[]
     includes: <T>(items: T[], item: T) => boolean
     concat: <T>(...lists: T[][]) => T[]
     assign: <T>(target: Partial<T>, ...overwrite: Array<Partial<T>>) => T
     find: <T>(items: T[], callback: (args: {
         item: T
-    }) => boolean, or: T | null) => T
+    }) => ProgrammingLanguage, or: T | null) => T
     sort: <T>(items: T[], callback: (args: {
         a: T,
         b: T
-    }) => number) => T[]
+    }) => ProgrammingLanguage) => T[]
     compare: <T>(a: T, b: T) => number
     upsert: <T extends {
         id: string | number
