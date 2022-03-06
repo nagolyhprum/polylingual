@@ -54,8 +54,8 @@ var _ = {
     toString : function(input) {
         return "" + input;
     },
-    concat : function(arrays) {
-        return [].concat.apply([], arrays);
+    concat : function() {
+        return [].concat.apply([], arguments);
     },
     find : function(list, callback, or) {
         return list.find(function(item) {
