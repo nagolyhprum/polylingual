@@ -63,7 +63,10 @@ var _ = {
                 item : item
             });
         }) || or;
-    }
+    },
+	compare : function(a, b) {
+		return a.localeCompare(b);
+	}
 };
 var fetch = (function(url, config) {
     var windowFetch = fetch;
