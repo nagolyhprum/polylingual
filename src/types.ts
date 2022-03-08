@@ -150,3 +150,13 @@ export type ProgrammingFetch = (url: string, config: {
 export type ProgrammingConsole = {
     log : (...args : unknown[]) => ProgrammingLanguage
 }
+
+export type ProgrammingBaseScope = {
+	Math: Math,
+	console: ProgrammingConsole
+	Date: ProgrammingDate
+	setTimeout: ProgrammingTimeout
+	JSON: ProgrammingJSON
+	_: ProgrammingUnderscore
+	fetch: ProgrammingFetch
+}

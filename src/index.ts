@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/ban-ts-comment */
 
-import { ProgrammingConsole, ProgrammingDate, ProgrammingFetch, ProgrammingJSON, ProgrammingLanguage, ProgrammingTimeout, ProgrammingUnderscore } from "./types";
+import { ProgrammingBaseScope, ProgrammingConsole, ProgrammingDate, ProgrammingFetch, ProgrammingJSON, ProgrammingLanguage, ProgrammingTimeout, ProgrammingUnderscore } from "./types";
 
 const wrapResult = (result: unknown): unknown => {
 	if(typeof result === "string") {
@@ -169,15 +169,7 @@ const GET_VOID = () => {
 	// DO NOTHING
 };
 
-export const code = <T = unknown>(callback: (scope: {
-	Math: Math,
-	console: ProgrammingConsole
-	Date: ProgrammingDate
-	setTimeout: ProgrammingTimeout
-	JSON: ProgrammingJSON
-	_: ProgrammingUnderscore
-	fetch: ProgrammingFetch
-} & T) => unknown, dependencies: Set<string>, scope?: T): ProgrammingLanguage => {
+export const code = <T = unknown>(callback: (scope: ProgrammingBaseScope & T) => unknown, dependencies: Set<string>, scope?: T): ProgrammingLanguage => {
 	return useCode(callback(
 		proxy({
 			scope: {
@@ -759,22 +751,21 @@ export {
 } from "./javascript";
 
 
-export const functions = <T>(functions : T) : T => {
+export const functions = <T, ExtendedScope>(functions : (scope : ProgrammingBaseScope & ExtendedScope) => T, scope : ExtendedScope) : T => {
 	const ret : Record<string, any> = {
 		_name: "declare",
 		variables: {},
 		body: [] as any
 	};
-
-	Object.keys(functions).forEach(key => {
-		const func = (functions as any)[key];
-		const dependencies = new Set<string>([]);
-		const body = code(func, dependencies);
+	const dependencies = new Set<string>([]);
+	const funcs = code(functions, dependencies, scope);
+	Object.keys(funcs).forEach(key => {
+		const func = (funcs as any)[key];
 		ret.body.push({
 			_name: "fun",
-			body,
+			body: func.body,
 			name : key,
-			args : Array.from(dependencies)
+			args : Array.from(func.args)
 		});
 		ret[key] = (args : any) => invoke({
 			args : [args],

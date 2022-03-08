@@ -707,7 +707,7 @@ describe("language", () => {
 	});
 	it("supports function declaration", () => {
 		const dependencies = new Set([]);
-		const declarations = functions({
+		const declarations = functions(() => ({
 			sum : ({
 				a,
 				b
@@ -715,11 +715,11 @@ describe("language", () => {
 				a : number
 				b : number
 			}) => result(add(a, b))
-		});
+		}), {});
 		const output = code(() => block([
 			declarations,
 			declarations.sum({ a : 1, b : 2 })
-		]), dependencies);
+		]), dependencies);		
 		expect(javascript(output, "")).toMatchSnapshot();
 	});
 });
