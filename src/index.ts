@@ -18,7 +18,7 @@ const wrapResult = (result: unknown): unknown => {
 	return result;
 };
 
-export const invoke = ({
+const invoke = ({
 	fun,
 	args,
 	target,
@@ -36,7 +36,7 @@ export const invoke = ({
 	sideEffect
 });
 
-export const proxy = ({
+const proxy = ({
 	scope,
 	path,
 	dependencies
@@ -156,7 +156,7 @@ export const condition = (test: boolean, then: ProgrammingLanguage): Programming
 	};
 };
 
-export const PollyDate: ProgrammingDate = {
+const PollyDate: ProgrammingDate = {
 	now: Date.now
 };
 
@@ -769,11 +769,7 @@ export const functions = <T>(functions : T) : T => {
 	Object.keys(functions).forEach(key => {
 		const func = (functions as any)[key];
 		const dependencies = new Set<string>([]);
-		const body = func(proxy({
-			scope : {},
-			path : [],
-			dependencies
-		}));
+		const body = code(func, dependencies);
 		ret.body.push({
 			_name: "fun",
 			body,
