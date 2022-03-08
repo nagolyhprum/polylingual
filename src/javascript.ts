@@ -4,6 +4,9 @@ import { ProgrammingLanguage } from "./types";
 
 export const bundle = () => `
 var _ = {
+	slice : function(list, from, to) {
+		return list.slice(from, to);
+	},
     sort : function(list, callback) {
         return list.sort(function (a, b) {
             return callback({
