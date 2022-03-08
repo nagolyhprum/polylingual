@@ -68,6 +68,9 @@ var _ = {
 		return a.localeCompare(b);
 	}
 };
+var fallback = function(a, b) {
+	return a === undefined || a === null ? b : a;
+};
 var fetch = (function(url, config) {
     var windowFetch = fetch;
     return function(url, config) {
@@ -181,7 +184,7 @@ ${tabs}}`;
 	case "fallback": {
 		const value = render(code.value, tabs);
 		const fallback = render(code.fallback, tabs);
-		return `(function(){var value = ${value};  return (value === null || value === undefined ? ${fallback} : value)})()`;
+		return `fallback(${value}, ${fallback})`;
 	}
 	default:
 		// @ts-ignore

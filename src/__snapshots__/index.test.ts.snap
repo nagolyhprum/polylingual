@@ -28,8 +28,8 @@ console.log(_.reduce([1, 2, 3], function (args) {
 	var item = args.item;
 	return (total + item);
 }, 0));
-console.log((function(){var value = value;  return (value === null || value === undefined ? \\"world\\" : value)})());
-console.log((function(){var value = null;  return (value === null || value === undefined ? \\"world\\" : value)})());
+console.log(fallback(value, \\"world\\"));
+console.log(fallback(null, \\"world\\"));
 console.log({
 	yesAndNo: (deeply.nested.yes && deeply.nested.no),
 	yesOrNo: (deeply.nested.yes || deeply.nested.no)
@@ -787,10 +787,10 @@ console.log(length);"
 exports[`language can set a string 1`] = `"ref.value = \\"value\\";"`;
 
 exports[`language can symbol and fallback on functions 1`] = `
-"console.log((function(){var value = _.filter([], function (args) {
+"console.log(fallback(_.filter([], function (args) {
 	var item = args.item;
 	return item;
-})[0];  return (value === null || value === undefined ? true : value)})());"
+})[0], true));"
 `;
 
 exports[`language chains functions 1`] = `"(\\"_\\" + Math.random().toString(16).substr(2) + Date.now().toString(16))"`;
@@ -800,9 +800,9 @@ exports[`language chains on symbol 1`] = `
 console.log(state.data[state.index].content);"
 `;
 
-exports[`language fallback can be a symbol target 1`] = `"console.log((function(){var value = object;  return (value === null || value === undefined ? {} : value)})().a);"`;
+exports[`language fallback can be a symbol target 1`] = `"console.log(fallback(object, {}).a);"`;
 
-exports[`language fallback is chainable 1`] = `"console.log((function(){var value = object;  return (value === null || value === undefined ? {} : value)})().a);"`;
+exports[`language fallback is chainable 1`] = `"console.log(fallback(object, {}).a);"`;
 
 exports[`language generates code for explicit setter 1`] = `"state.holder = state.value;"`;
 
