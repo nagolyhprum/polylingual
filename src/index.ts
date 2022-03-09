@@ -753,36 +753,32 @@ export {
 
 export const functions = <T, ExtendedScope>(
 	functions : (
-		scope : ProgrammingBaseScope & ExtendedScope & {
-			invoke : T
-		}
+		scope : ProgrammingBaseScope & ExtendedScope
 	) => T, 
 	scope : ExtendedScope
-) : T => {
-	const ret : Record<string, any> = {
-		_name: "declare",
-		variables: {},
-		body: [] as any
+) : {
+	(): ProgrammingLanguage
+ } & T => {
+	const ret : any = () => {
+		const declare = {
+			_name: "declare",
+			variables: {},
+			body: [] as any
+		};
+		Object.keys(funcs).forEach(key => {
+			const func = (funcs as any)[key];
+			declare.body.push({
+				_name: "fun",
+				body: func.body,
+				name : key,
+				args : Array.from(func.args)
+			});
+		});
+		return declare;
 	};
 	const dependencies = new Set<string>([]);
-	const funcs = code(functions, dependencies, {
-		...scope,
-		invoke : new Proxy({}, {
-			get() {
-				return function() {
-					// do nothing
-				};
-			}
-		}) as T
-	});
+	const funcs = code(functions, dependencies, scope);
 	Object.keys(funcs).forEach(key => {
-		const func = (funcs as any)[key];
-		ret.body.push({
-			_name: "fun",
-			body: func.body,
-			name : key,
-			args : Array.from(func.args)
-		});
 		ret[key] = (args : any) => invoke({
 			args : [args],
 			fun : key,
@@ -790,5 +786,5 @@ export const functions = <T, ExtendedScope>(
 			target: undefined
 		});
 	});
-	return ret as any;
+	return ret;
 };

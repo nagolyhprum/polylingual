@@ -717,7 +717,7 @@ describe("language", () => {
 			}) => result(add(a, b))
 		}), {});
 		const output = code(() => block([
-			declarations,
+			declarations(),
 			declarations.sum({ a : 1, b : 2 })
 		]), dependencies);		
 		expect(javascript(output, "")).toMatchSnapshot();
