@@ -169,49 +169,59 @@ const GET_VOID = () => {
 	// DO NOTHING
 };
 
+const getProxy = <T>({
+	scope,
+	dependencies
+} : {
+	dependencies: Set<string>, scope?: T
+}) => proxy({
+		scope: {
+			JSON: {
+				stringify: GET_STRING,
+				parse: GET_OBJECT
+			},
+			fetch: GET_VOID,
+			Math,
+			Date: PollyDate,
+			console: {
+				log: GET_VOID
+			},
+			setTimeout: GET_NUMBER,
+			parseFloat: GET_NUMBER,
+			socket : {
+				on : GET_VOID
+			},
+			_: {
+				toLowerCase: GET_STRING,
+				split: GET_ARRAY,
+				toString: GET_STRING,
+				some: GET_BOOLEAN,
+				every: GET_BOOLEAN,
+				indexOf: () => -1,
+				compare: GET_NUMBER,
+				sort: GET_ARRAY,
+				map: GET_ARRAY,
+				forEach: GET_VOID,
+				reduce: (items: any, callback: any, initial: any) => initial || {},
+				slice: GET_ARRAY,
+				replace: GET_STRING,
+				filter: GET_ARRAY,
+				includes: GET_BOOLEAN,
+				concat: GET_ARRAY,
+				assign: GET_OBJECT,
+				find: GET_OBJECT,
+				upsert: GET_ARRAY
+			},
+			...scope
+		},
+		path: [],
+		dependencies
+	});
+
 export const code = <T = unknown>(callback: (scope: ProgrammingBaseScope & T) => unknown, dependencies: Set<string>, scope?: T): ProgrammingLanguage => {
 	return useCode(callback(
-		proxy({
-			scope: {
-				JSON: {
-					stringify: GET_STRING,
-					parse: GET_OBJECT
-				},
-				fetch: GET_VOID,
-				Math,
-				Date: PollyDate,
-				console: {
-					log: GET_VOID
-				},
-				setTimeout: GET_NUMBER,
-				parseFloat: GET_NUMBER,
-				socket : {
-					on : GET_VOID
-				},
-				_: {
-					toLowerCase: GET_STRING,
-					split: GET_ARRAY,
-					toString: GET_STRING,
-					some: GET_BOOLEAN,
-					every: GET_BOOLEAN,
-					indexOf: () => -1,
-					compare: GET_NUMBER,
-					sort: GET_ARRAY,
-					map: GET_ARRAY,
-					forEach: GET_VOID,
-					reduce: (items: any, callback: any, initial: any) => initial || {},
-					slice: GET_ARRAY,
-					replace: GET_STRING,
-					filter: GET_ARRAY,
-					includes: GET_BOOLEAN,
-					concat: GET_ARRAY,
-					assign: GET_OBJECT,
-					find: GET_OBJECT,
-					upsert: GET_ARRAY
-				},
-				...scope
-			},
-			path: [],
+		getProxy({
+			scope,
 			dependencies
 		})
 	));
@@ -766,7 +776,7 @@ export const functions = <T, ExtendedScope>(
 			body: [] as any
 		};
 		Object.keys(funcs).forEach(key => {
-			const func = (funcs as any)[key];
+			const func = useCode((funcs as any)[key]);
 			declare.body.push({
 				_name: "fun",
 				body: func.body,
@@ -777,7 +787,10 @@ export const functions = <T, ExtendedScope>(
 		return declare;
 	};
 	const dependencies = new Set<string>([]);
-	const funcs = code(functions, dependencies, scope);
+	const funcs = functions(getProxy({
+		dependencies,
+		scope
+	}));
 	Object.keys(funcs).forEach(key => {
 		ret[key] = (args : any) => invoke({
 			args : [args],
