@@ -751,14 +751,30 @@ export {
 } from "./javascript";
 
 
-export const functions = <T, ExtendedScope>(functions : (scope : ProgrammingBaseScope & ExtendedScope) => T, scope : ExtendedScope) : T => {
+export const functions = <T, ExtendedScope>(
+	functions : (
+		scope : ProgrammingBaseScope & ExtendedScope & {
+			invoke : T
+		}
+	) => T, 
+	scope : ExtendedScope
+) : T => {
 	const ret : Record<string, any> = {
 		_name: "declare",
 		variables: {},
 		body: [] as any
 	};
 	const dependencies = new Set<string>([]);
-	const funcs = code(functions, dependencies, scope);
+	const funcs = code(functions, dependencies, {
+		...scope,
+		invoke : new Proxy({}, {
+			get() {
+				return function() {
+					// do nothing
+				};
+			}
+		}) as T
+	});
 	Object.keys(funcs).forEach(key => {
 		const func = (funcs as any)[key];
 		ret.body.push({
