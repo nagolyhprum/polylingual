@@ -820,7 +820,7 @@ export const getDependencies = (code : unknown, dependencies = new Set<string>([
 					value.forEach(it => dependencies.add(it));
 				}
 			}
-			return dependencies;
+			return getDependencies((code as any)[key], dependencies);
 		}, dependencies);
 	}
 	return dependencies;
