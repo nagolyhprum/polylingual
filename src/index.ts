@@ -60,7 +60,7 @@ const proxy = ({
 						_name: "get",
 						variable: path
 					};
-					ret.dependencies = dependencies;
+					ret.dependencies = Array.from(dependencies);
 					return ret;
 				}
 				const prop = scope[key] ?? {};
