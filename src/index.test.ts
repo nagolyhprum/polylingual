@@ -708,6 +708,7 @@ describe("language", () => {
 	it("supports function declaration", () => {
 		const dependencies = new Set([]);
 		const declarations = functions(() => ({
+			sideEffect : () => block([]),
 			sum : ({
 				a,
 				b
@@ -718,6 +719,7 @@ describe("language", () => {
 		}), {});
 		const output = code(() => block([
 			declarations(),
+			declarations.sideEffect(),
 			declarations.sum({ a : 1, b : 2 })
 		]), dependencies);		
 		expect(javascript(output, "")).toMatchSnapshot();

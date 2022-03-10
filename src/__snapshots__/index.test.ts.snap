@@ -815,7 +815,7 @@ exports[`language handles - in property names 1`] = `
 
 exports[`language passes functions to objects 1`] = `
 "console.log({
-	callback: function (args) {
+	callback: function () {
 		console.log(\\"HERE\\");
 	}
 });"
@@ -873,11 +873,15 @@ if(!((local.list === \\"\\"))) {
 `;
 
 exports[`language supports function declaration 1`] = `
-"function sum(args) {
+"function sideEffect() {
+
+}
+function sum(args) {
 	var a = args.a;
 	var b = args.b;
 	return (a + b);
 }
+sideEffect()
 sum({
 	a: 1,
 	b: 2
@@ -892,7 +896,7 @@ exports[`language supports functions as arguments 1`] = `
 `;
 
 exports[`language supports timeout 1`] = `
-"setTimeout(function (args) {
+"setTimeout(function () {
 	console.log(\\"test\\");
 }, 300)"
 `;

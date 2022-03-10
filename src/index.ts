@@ -793,7 +793,7 @@ export const functions = <T, ExtendedScope>(
 	}));
 	Object.keys(funcs).forEach(key => {
 		ret[key] = (args : any) => invoke({
-			args : [args],
+			args : args ? [args] : [],
 			fun : key,
 			sideEffect: false,
 			target: undefined
