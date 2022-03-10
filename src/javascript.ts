@@ -2,100 +2,141 @@
 
 import { ProgrammingLanguage } from "./types";
 
-export const bundle = () => `
-var _ = {
-	slice : function(list, from, to) {
-		return list.slice(from, to);
-	},
-    sort : function(list, callback) {
-        return list.sort(function (a, b) {
-            return callback({
-                a : a,
-                b : b
-            });
-        });
-    },
-    reduce : function(list, callback, start) {
-        return list.reduce(function(total, item) {
-            return callback({
-                total : total,
-                item : item
-            })
-        }, start);
-    },
-    upsert : function(list, upsert) {
-        var item = list.find(function(item) {
-            return (item.id && upsert.id && item.id === upsert.id) || (item.key && upsert.key && item.key === upsert.key)
-        })
-        if(item) {
-            var index = list.indexOf(item);
-            return [].concat(list.slice(0, index), [Object.assign(item, upsert)], list.slice(index + 1));
-        } else {
-            return list.concat([upsert]);
-        }
-    },
-    assign : function() {
-        return Object.assign.apply(null, arguments);
-    },
-    map : function(list, callback) {
-        return list.map(function(item, index, items) {
-            return callback({
-                item : item,
-                index : index,
-                items : items
-            })
-        })
-    },
-    filter : function(list, callback) {
-        return list.filter(function(item, index) {
-            return callback({
-                item : item,
-                index : index
-            })
-        })
-    },
-    toString : function(input) {
-        return "" + input;
-    },
-    concat : function() {
-        return [].concat.apply([], arguments);
-    },
-    find : function(list, callback, or) {
-        return list.find(function(item) {
-            return callback({
-                item : item
-            });
-        }) || or;
-    },
-	compare : function(a, b) {
-		return a.localeCompare(b);
+export const bundle = (dependencies : Set<string>) => [{
+	dependency : "_",
+	code : "var _ = {}"
+}, {
+	dependency : "_.slice",
+	code: `
+_.slice = function(list, from, to) {
+	return list.slice(from, to);
+};`},{
+	dependency : "_.sort",
+	code : `
+_.sort = function(list, callback) {
+	return list.sort(function (a, b) {
+		return callback({
+			a : a,
+			b : b
+		});
+	});
+};`
+},{
+	dependency : "_.reduce",
+	code : `
+_.reduce = function(list, callback, start) {
+	return list.reduce(function(total, item) {
+		return callback({
+			total : total,
+			item : item
+		})
+	}, start);
+};`
+},{
+	dependency : "_.upsert",
+	code : `
+_.upsert = function(list, upsert) {
+	var item = list.find(function(item) {
+		return (item.id && upsert.id && item.id === upsert.id) || (item.key && upsert.key && item.key === upsert.key)
+	})
+	if(item) {
+		var index = list.indexOf(item);
+		return [].concat(list.slice(0, index), [Object.assign(item, upsert)], list.slice(index + 1));
+	} else {
+		return list.concat([upsert]);
 	}
 };
+`
+},{
+	dependency : "_.assign",
+	code : `
+_.assign = function() {
+	return Object.assign.apply(null, arguments);
+};`
+},{
+	dependency : "_.map",
+	code : `
+_.map = function(list, callback) {
+	return list.map(function(item, index, items) {
+		return callback({
+			item : item,
+			index : index,
+			items : items
+		})
+	})
+};`
+},{
+	dependency : "_.filter",
+	code : `
+_.filter = function(list, callback) {
+	return list.filter(function(item, index) {
+		return callback({
+			item : item,
+			index : index
+		})
+	})
+};`
+},{
+	dependency : "_.toString",
+	code : `
+_.toString = function(input) {
+	return "" + input;
+};`
+},{
+	dependency : "_.concat",
+	code : `
+_.concat = function() {
+	return [].concat.apply([], arguments);
+};
+`
+},{
+	dependency : "_.find",
+	code : `
+_.find = function(list, callback, or) {
+	return list.find(function(item) {
+		return callback({
+			item : item
+		});
+	}) || or;
+};`
+},{
+	dependency : "_.compare",
+	code : `
+_.compare = function(a, b) {
+	return a.localeCompare(b);
+};`
+},{
+	dependency : "fetch",
+	code : `
+var fetch = (function(url, config) {
+	var windowFetch = fetch;
+	return function(url, config) {
+		windowFetch(url, {
+			method : config.method,
+			body : config.body,
+			headers : config.headers
+		}).then(function(res) {
+			if(config.callback) {
+				return res.text().then(function(text) {
+					config.callback({
+						status : res.status,
+						body : text,
+						headers : res.headers
+					});
+					update();
+				})
+			}
+		})
+	}
+})();`
+}].filter(({ 
+	dependency 
+}) => dependencies.has(dependency)).map(
+	it => it.code.trim()
+).join("\n") + `
 var fallback = function(a, b) {
 	return a === undefined || a === null ? b : a;
-};
-var fetch = (function(url, config) {
-    var windowFetch = fetch;
-    return function(url, config) {
-        windowFetch(url, {
-            method : config.method,
-            body : config.body,
-            headers : config.headers
-        }).then(function(res) {
-            if(config.callback) {
-                return res.text().then(function(text) {
-                    config.callback({
-                        status : res.status,
-                        body : text,
-                        headers : res.headers
-                    });
-                    update();
-                })
-            }
-        })
-    }
-})();
-`;
+};`;
 
 const variableRegexp = /^[a-zA-Z_$][0-9a-zA-Z_$]*$/;
 
