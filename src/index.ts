@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/ban-ts-comment */
 
-import { ProgrammingBaseScope, ProgrammingConsole, ProgrammingDate, ProgrammingFetch, ProgrammingJSON, ProgrammingLanguage, ProgrammingTimeout, ProgrammingUnderscore } from "./types";
+import { ProgrammingBaseScope, ProgrammingDate, ProgrammingLanguage } from "./types";
 
 const wrapResult = (result: unknown): unknown => {
 	if(typeof result === "string") {
@@ -22,18 +22,21 @@ const invoke = ({
 	fun,
 	args,
 	target,
-	sideEffect
+	sideEffect,
+	dependencies
 } : {
 	fun: string | symbol
 	args: unknown[]
 	target: unknown
 	sideEffect: boolean
+	dependencies : Set<string>
 }) => ({
 	_name: "invoke",
 	target,
 	fun,
 	args: args.map(useCode),
-	sideEffect
+	sideEffect,
+	dependencies : Array.from(dependencies)
 });
 
 const proxy = ({
@@ -53,10 +56,12 @@ const proxy = ({
 			},
 			get(_, key: string | symbol) {
 				if (key === "_code") {
-					return scope?._code ?? {
+					const ret = scope?._code ?? {
 						_name: "get",
 						variable: path
 					};
+					ret.dependencies = dependencies;
+					return ret;
 				}
 				const prop = scope[key] ?? {};
 				const codePath = scope._code;
@@ -77,10 +82,11 @@ const proxy = ({
 							},
 							fun: key,
 							args: args.map(useCode),
-							sideEffect: result === undefined
+							sideEffect: result === undefined,
+							dependencies
 						});
 						return proxy({
-							dependencies: new Set([]),
+							dependencies,
 							path: [],
 							scope: wrapped
 						});
@@ -118,8 +124,8 @@ const useCode = (it: unknown): any => {
 		});
 	}
 	if(typeof it === "function") {
-		const scope = {};
 		const dependencies = new Set<string>([]);
+		const scope = {};
 		const body = it(proxy({
 			scope,
 			path: [],
@@ -246,7 +252,7 @@ export function symbol(
 	index: any
 ): any {
 	const path = useCode(variable);
-	const dependencies = new Set([]);
+	const dependencies = new Set<string>([]);
 	// TODO make this better
 	if(path._name === "fallback" || path._name === "invoke") {
 		return proxy({
@@ -367,7 +373,7 @@ export const fallback = <T>(value: T | null | undefined, fallback: T): T => {
 	// @ts-ignore
 	return proxy({
 		scope: {},
-		dependencies: new Set([]),
+		dependencies: new Set<string>([]),
 		path: [{
 			_name: "fallback",
 			value: useCode(value),
@@ -404,7 +410,7 @@ export const declare = <T extends Record<string, unknown>>(callback: (input: T) 
 		proxy({
 			scope,
 			path: [],
-			dependencies: new Set([])
+			dependencies: new Set<string>([])
 		})
 	);
 	return {
@@ -769,6 +775,7 @@ export const functions = <T, ExtendedScope>(
 ) : {
 	(): ProgrammingLanguage
  } & T => {
+	const dependencies = new Set<string>([]);
 	const ret : any = () => {
 		const declare = {
 			_name: "declare",
@@ -786,7 +793,6 @@ export const functions = <T, ExtendedScope>(
 		});
 		return declare;
 	};
-	const dependencies = new Set<string>([]);
 	const funcs = functions(getProxy({
 		dependencies,
 		scope
@@ -796,8 +802,26 @@ export const functions = <T, ExtendedScope>(
 			args : args ? [args] : [],
 			fun : key,
 			sideEffect: false,
-			target: undefined
+			target: undefined,
+			dependencies
 		});
 	});
 	return ret;
+};
+
+export const getDependencies = (code : unknown, dependencies = new Set<string>([])) : Set<string> => {
+	if(Array.isArray(code)) {
+		return code.reduce((dependencies, item) => getDependencies(item, dependencies), dependencies);
+	} else if(typeof code === "object" && code !== null) {
+		return Object.keys(code).reduce((dependencies, key) => {
+			if(key === "dependencies") {
+				const value = (code as Record<string, unknown>).dependencies;
+				if(Array.isArray(value)) {
+					value.forEach(it => dependencies.add(it));
+				}
+			}
+			return dependencies;
+		}, dependencies);
+	}
+	return dependencies;
 };

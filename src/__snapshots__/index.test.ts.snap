@@ -874,7 +874,7 @@ if(!((local.list === \\"\\"))) {
 
 exports[`language supports function declaration 1`] = `
 "function sideEffect() {
-
+Date.now()
 }
 function sum(args) {
 	var a = args.a;

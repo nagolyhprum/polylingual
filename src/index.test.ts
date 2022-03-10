@@ -707,8 +707,12 @@ describe("language", () => {
 	});
 	it("supports function declaration", () => {
 		const dependencies = new Set([]);
-		const declarations = functions(() => ({
-			sideEffect : () => block([]),
+		const declarations = functions(({
+			Date			
+		}) => ({
+			sideEffect : () => block([
+				Date.now()
+			]),
 			sum : ({
 				a,
 				b

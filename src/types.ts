@@ -47,7 +47,7 @@ export type ProgrammingUnderscore = {
     }>(list: T[], item: T) => T[]
 }
 
-export type ProgrammingLanguage = {
+export type ProgrammingLanguage = ({
     _name: "fallback",
     value: ProgrammingLanguage,
     fallback: ProgrammingLanguage
@@ -123,6 +123,8 @@ export type ProgrammingLanguage = {
 } | {
     _name: "defined"
     item: ProgrammingLanguage
+}) & {
+    dependencies?: string[]
 }
 
 export type ProgrammingDate = {
