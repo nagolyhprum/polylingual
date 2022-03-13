@@ -7,6 +7,7 @@ const remap = {
 };
 
 export const bundle = () => `
+
 import android.Manifest
 import android.content.Intent
 import android.content.pm.PackageManager
@@ -25,6 +26,7 @@ import java.text.DecimalFormatSymbols
 import java.text.SimpleDateFormat
 import java.util.*
 import java.util.concurrent.locks.ReentrantLock
+import kotlin.math.pow
 
 fun executor(max: Int, makeThread: (() -> Unit) -> Unit): (() -> Unit) -> Unit {
     val lock = ReentrantLock()
@@ -364,7 +366,7 @@ val extensions = mapOf<String, Extension>(
                 val lang = config["lang"] as? String ?: "en-US"
                 val rate = (config["rate"] as? Double ?: 1).toFloat()
                 val text = config["text"] as? String ?: ""
-                val tts = MainActivity.activity.tts
+                val tts = MainActivity.tts
                 tts.language = Locale(lang)
                 tts.setSpeechRate(rate)
                 tts.speak(text, TextToSpeech.QUEUE_FLUSH, null)
@@ -422,7 +424,7 @@ val extensions = mapOf<String, Extension>(
         override fun invoke(vararg args: Any?): Any? {
             val receiver = args[0]
             val values = args.asList().subList(1, args.size)
-            if (receiver is Console) {
+            if (receiver is ProgrammingConsole) {
                 Log.d("console.log", "$values")
                 return null
             }
