@@ -9,9 +9,12 @@ const remap = {
 export const bundle = () => `
 import android.os.Handler
 import android.os.Looper
+import android.util.Log
 import org.json.JSONArray
 import org.json.JSONObject
 import java.text.DecimalFormat
+import java.util.LinkedList
+import java.util.concurrent.locks.ReentrantLock
 
 fun executor(max: Int, makeThread: (() -> Unit) -> Unit): (() -> Unit) -> Unit {
     val lock = ReentrantLock()
@@ -132,7 +135,7 @@ val extensions = mapOf<String, Extension>(
                 true -> args[2]
                 false -> null
             }
-            if (receiver is PollyUnderscore && a is Comparable<*> && b is Comparable<*>) {
+            if (receiver is ProgrammingUnderscore && a is Comparable<*> && b is Comparable<*>) {
                 return (a as Comparable<Any?>).compareTo(b as Any?)
             }
             throw NotImplementedError("compare for $args")
@@ -186,64 +189,6 @@ val extensions = mapOf<String, Extension>(
             throw NotImplementedError("start for $args")
         }
     },
-    "clear" to object : Extension {
-        override fun invoke(vararg args: Any?): Any? {
-            val receiver = args[0]
-            val path = when (args.size >= 2) {
-                true -> args[1]
-                false -> null
-            }
-            val params = when (args.size >= 3) {
-                true -> args[2]
-                false -> null
-            }
-            if (receiver is PollyNavigation && path is String && params is Map<*, *>?) {
-                receiver.clear(path, params as Map<String, Any?>?)
-                return null
-            }
-            return null
-        }
-    },
-    "push" to object : Extension {
-        override fun invoke(vararg args: Any?): Any? {
-            val receiver = args[0]
-            val path = when (args.size >= 2) {
-                true -> args[1]
-                false -> null
-            }
-            val params = when (args.size >= 3) {
-                true -> args[2]
-                false -> null
-            }
-            if (receiver is PollyNavigation && path is String && params is Map<*, *>?) {
-                receiver.push(path, params as Map<String, Any?>?)
-                return null
-            }
-            if (receiver is PollyToaster && path is String) {
-                val toaster = state?.get("toaster")
-                if (toaster is Map<*, *>) {
-                    val queue = toaster["queue"]
-                    if (queue is MutableList<*>) {
-                        val toast = mutableMapOf<String, Any?>(
-                                "message" to path,
-                                "key" to generateName(),
-                                "animation" to "normal-in"
-                        )
-                        (queue as MutableList<MutableMap<String, Any?>>).add(toast)
-                    }
-                    val curr = toaster["curr"]
-                    if (curr is MutableMap<*, *>) {
-                        val key = curr["key"]
-                        if (hasValue(key).not()) {
-                            receiver.next()
-                        }
-                    }
-                }
-                return null
-            }
-            throw NotImplementedError("push for $args")
-        }
-    },
     "moment" to object : Extension {
         override fun invoke(vararg args: Any?): Any? {
             val ms = when (args.size >= 2) {
@@ -251,7 +196,7 @@ val extensions = mapOf<String, Extension>(
                 false -> null
             }
             if (ms is Double) {
-                return PollyMoment(ms)
+                return ProgrammingMoment(ms)
             }
             throw NotImplementedError("moment for $args")
         }
@@ -267,7 +212,7 @@ val extensions = mapOf<String, Extension>(
                 true -> args[2]
                 false -> null
             }
-            if (receiver is PollyUnderscore && list is List<*>) {
+            if (receiver is ProgrammingUnderscore && list is List<*>) {
                 return list.contains(needle)
             }
             throw NotImplementedError("includes for $args")
@@ -284,7 +229,7 @@ val extensions = mapOf<String, Extension>(
                 true -> args[2]
                 false -> null
             }
-            if(receiver is PollyUnderscore && source is String && token is String) {
+            if(receiver is ProgrammingUnderscore && source is String && token is String) {
                 return source.split(Regex(token))
             }
             throw NotImplementedError("toLowerCase for $args")
@@ -297,7 +242,7 @@ val extensions = mapOf<String, Extension>(
                 true -> args[1]
                 false -> null
             }
-            if(receiver is PollyUnderscore && string is String) {
+            if(receiver is ProgrammingUnderscore && string is String) {
                 return string.toLowerCase()
             }
             throw NotImplementedError("toLowerCase for $args")
@@ -315,7 +260,7 @@ val extensions = mapOf<String, Extension>(
                     it.toLong().toString(radix.toInt())
                 }.joinToString(".")
             }
-            if (receiver is PollyUnderscore) {
+            if (receiver is ProgrammingUnderscore) {
                 if(radix is Double) {
                     val otherSymbols = DecimalFormatSymbols()
                     val df = DecimalFormat("#.##########", otherSymbols)
@@ -360,7 +305,7 @@ val extensions = mapOf<String, Extension>(
             val allMaps = overwrite?.all {
                 it is MutableMap<*, *>
             } ?: false
-            if (receiver is PollyUnderscore && target is MutableMap<*, *> && allMaps) {
+            if (receiver is ProgrammingUnderscore && target is MutableMap<*, *> && allMaps) {
                 return overwrite?.fold(mutableMapOf<String, Any?>()) { total, item ->
                     total.putAll(item as MutableMap<String, Any?>)
                     total
@@ -384,7 +329,7 @@ val extensions = mapOf<String, Extension>(
                 true -> args[3]
                 false -> null
             }
-            if (receiver is PollyUnderscore && list is List<*> && callback is ArgumentCallback) {
+            if (receiver is ProgrammingUnderscore && list is List<*> && callback is ArgumentCallback) {
                 return list.foldIndexed(initial) { index, total, item ->
                     callback.invoke(
                             mapOf(
@@ -433,7 +378,7 @@ val extensions = mapOf<String, Extension>(
                 true -> args[3]
                 false -> null
             }
-            if (receiver is PollyUnderscore && haystack is String && needle is String && replace is String) {
+            if (receiver is ProgrammingUnderscore && haystack is String && needle is String && replace is String) {
                 return haystack.replace(Regex(needle), replace)
             }
             throw NotImplementedError("replace for $args")
@@ -450,7 +395,7 @@ val extensions = mapOf<String, Extension>(
                 true -> args[2]
                 false -> null
             }
-            if (receiver is PollyUnderscore && list is List<*> && callback is ArgumentCallback) {
+            if (receiver is ProgrammingUnderscore && list is List<*> && callback is ArgumentCallback) {
                 return list.forEachIndexed { index, item ->
                     callback.invoke(
                             mapOf(
@@ -485,7 +430,7 @@ val extensions = mapOf<String, Extension>(
                 true -> args[2]
                 false -> null
             }
-            if (receiver is PollyMath && a is Double && b is Double) {
+            if (receiver is ProgrammingMath && a is Double && b is Double) {
                 return a.pow(b)
             }
             throw NotImplementedError("pow for $args")
@@ -502,7 +447,7 @@ val extensions = mapOf<String, Extension>(
                 true -> args[2]
                 false -> null
             }
-            if (receiver is PollyUnderscore && list is List<*> && callback is ArgumentCallback) {
+            if (receiver is ProgrammingUnderscore && list is List<*> && callback is ArgumentCallback) {
                 return list.mapIndexed { index, item ->
                     callback.invoke(
                             mapOf(
@@ -526,7 +471,7 @@ val extensions = mapOf<String, Extension>(
                 true -> args[2]
                 false -> null
             }
-            if (receiver is PollyUnderscore && list is List<*> && callback is ArgumentCallback) {
+            if (receiver is ProgrammingUnderscore && list is List<*> && callback is ArgumentCallback) {
                 return list.filter { item ->
                     hasValue(
                             callback.invoke(
@@ -551,7 +496,7 @@ val extensions = mapOf<String, Extension>(
                 true -> args[2]
                 false -> null
             }
-            if (receiver is PollyUnderscore && list is List<*> && callback is ArgumentCallback) {
+            if (receiver is ProgrammingUnderscore && list is List<*> && callback is ArgumentCallback) {
                 val item = list.find { item ->
                     hasValue(
                             callback.invoke(
@@ -595,7 +540,7 @@ val extensions = mapOf<String, Extension>(
                 true -> args[3]
                 false -> null
             }
-            if (receiver is PollyUnderscore && list is List<*> && callback is ArgumentCallback) {
+            if (receiver is ProgrammingUnderscore && list is List<*> && callback is ArgumentCallback) {
                 return list.find { item ->
                     hasValue(
                             callback.invoke(
@@ -620,7 +565,7 @@ val extensions = mapOf<String, Extension>(
                 true -> args[2]
                 false -> null
             }
-            if (receiver is PollyUnderscore && list is List<*> && callback is ArgumentCallback) {
+            if (receiver is ProgrammingUnderscore && list is List<*> && callback is ArgumentCallback) {
                 return list.all { item ->
                     hasValue(
                             callback.invoke(
@@ -645,7 +590,7 @@ val extensions = mapOf<String, Extension>(
                 true -> args[2]
                 false -> null
             }
-            if (receiver is PollyUnderscore && list is List<*> && callback is ArgumentCallback) {
+            if (receiver is ProgrammingUnderscore && list is List<*> && callback is ArgumentCallback) {
                 return list.any { item ->
                     hasValue(
                             callback.invoke(
@@ -670,7 +615,7 @@ val extensions = mapOf<String, Extension>(
                 true -> args[2]
                 false -> null
             }
-            if (receiver is PollyUnderscore && list is List<*> && callback is ArgumentCallback) {
+            if (receiver is ProgrammingUnderscore && list is List<*> && callback is ArgumentCallback) {
                 return list.sortedWith { a, b ->
                     (callback.invoke(
                             mapOf(
@@ -697,7 +642,7 @@ val extensions = mapOf<String, Extension>(
             val isLists = rest?.all {
                 it is List<*>
             } ?: false
-            if (receiver is PollyUnderscore && target is List<*> && isLists) {
+            if (receiver is ProgrammingUnderscore && target is List<*> && isLists) {
                 return rest?.fold(target) { total, item ->
                     total + (item as List<Map<String, Any?>>)
                 }
@@ -716,7 +661,7 @@ val extensions = mapOf<String, Extension>(
                 true -> args[2]
                 false -> null
             }
-            if (receiver is PollyUnderscore && haystack is List<*> && needle is MutableMap<*, *>) {
+            if (receiver is ProgrammingUnderscore && haystack is List<*> && needle is MutableMap<*, *>) {
                 val item = haystack.find {
                     it is MutableMap<*, *> && it["key"] == needle["key"]
                 }
@@ -779,7 +724,7 @@ val extensions = mapOf<String, Extension>(
                 true -> args[3]
                 false -> null
             }
-            if (receiver is PollyUnderscore && target is MutableList<*> && from is Double && to is Double) {
+            if (receiver is ProgrammingUnderscore && target is MutableList<*> && from is Double && to is Double) {
                 return target.subList(from.toInt(), to.toInt())
             }
             throw NotImplementedError("slice for $args")
