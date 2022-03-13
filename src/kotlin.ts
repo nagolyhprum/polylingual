@@ -7,8 +7,11 @@ const remap = {
 };
 
 export const bundle = () => `
+import android.os.Handler
+import android.os.Looper
 import org.json.JSONArray
 import org.json.JSONObject
+import java.text.DecimalFormat
 
 class JSON {
     companion object {
