@@ -86,7 +86,7 @@ interface ArgumentCallback {
     fun invoke(args: Any?): Any?
 }
 
-val extensions = mapOf<String, Extension>(
+val extensions = mutableMapOf<String, Extension>(
     "api" to object : Extension {
         override fun invoke(vararg args: Any?): Any? {
             val receiver = args[0]
@@ -1065,6 +1065,14 @@ ${tabs}}${otherwise}`;
 			...code.args.map(it => `${tabs}\t\tval ${it} = get(listOf(args, "${it}"))`),
 			render(code.body, `${tabs}\t\t`)
 		];
+		if(code.name) {
+			return `extensions["${code.name}"] = object : Extension {
+${tabs}override fun invoke(vararg args: Any?): Any? {
+${body.join("\n")}
+${tabs}\t\treturn null
+${tabs}\t}
+${tabs}}`;
+		}
 		return `object : ArgumentCallback {
 ${tabs}\toverride fun invoke(args: Any?): Any? {
 ${body.join("\n")}
