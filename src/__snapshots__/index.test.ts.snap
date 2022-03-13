@@ -296,7 +296,7 @@ invoke(
 								item
 							)
 						))
-						return state
+						return null
 					}
 				},
 				(0).toDouble()

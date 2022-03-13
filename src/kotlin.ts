@@ -13,6 +13,811 @@ import org.json.JSONArray
 import org.json.JSONObject
 import java.text.DecimalFormat
 
+fun executor(max: Int, makeThread: (() -> Unit) -> Unit): (() -> Unit) -> Unit {
+    val lock = ReentrantLock()
+    val queue = LinkedList<() -> Unit>()
+    var running = 0
+    return {
+        lock.lock()
+        queue.add(it)
+        if (running < max) {
+            running++
+            makeThread {
+                while (true) {
+                    lock.lock()
+                    val next = queue.poll()
+                    if (next != null) {
+                        lock.unlock()
+                        next()
+                    } else {
+                        running--
+                        lock.unlock()
+                        break
+                    }
+                }
+            }
+        }
+        lock.unlock()
+    }
+}
+
+val mainExecutor = executor(1) {
+    Handler(Looper.getMainLooper()).post(it)
+}
+
+fun main(callback : () -> Unit) {
+    if (Looper.myLooper() == Looper.getMainLooper()) {
+        Log.d("executor", "already in main")
+    }
+    mainExecutor(callback)
+}
+
+val backgroundExecutor = executor(1) {
+    Thread(it).start()
+}
+
+fun background(callback : () -> Unit) {
+    if (Looper.myLooper() != Looper.getMainLooper()) {
+        Log.d("executor", "already in background")
+    }
+    backgroundExecutor(callback)
+}
+
+interface Extension {
+    fun invoke(vararg args: Any?): Any?
+}
+
+interface ArgumentCallback {
+    fun invoke(args: Any?): Any?
+}
+
+val extensions = mapOf<String, Extension>(
+    "api" to object : Extension {
+        override fun invoke(vararg args: Any?): Any? {
+            val receiver = args[0]
+            val config = when (args.size >= 2) {
+                true -> args[1]
+                false -> null
+            }
+            if (config is Map<*, *>) {
+                val data = config["data"]
+                val execute = config["execute"]
+                val callback = config["callback"]
+                val json = JSON.stringify(mutableMapOf(
+                    "data" to data,
+                    "execute" to when(execute) {
+                        is String -> JSON.parse(execute)
+                        else -> ""
+                    }
+                ))
+                val queue = com.android.volley.toolbox.Volley.newRequestQueue(PollyApplication.context)
+                val url = "https://www.speaknatively.com/api"
+                val stringRequest = object : com.android.volley.toolbox.StringRequest(
+                        Method.POST,
+                        url,
+                        { response ->
+                            if(callback is ArgumentCallback) {
+                                callback.invoke(mutableMapOf(
+                                        "data" to JSON.parse(response)
+                                ))
+                            }
+                        },
+                        {
+
+                        },
+
+                ) {
+                    override fun getBodyContentType(): String {
+                        return "application/json; charset=utf-8"
+                    }
+
+                    override fun getBody(): ByteArray {
+                        return json.toByteArray(Charsets.UTF_8)
+                    }
+                }
+                queue.add(stringRequest)
+                return null
+            }
+            throw NotImplementedError("api for $args")
+        }
+    },
+    "compare" to object : Extension {
+        override fun invoke(vararg args: Any?): Any? {
+            val receiver = args[0]
+            val a = when (args.size >= 2) {
+                true -> args[1]
+                false -> null
+            }
+            val b = when (args.size >= 3) {
+                true -> args[2]
+                false -> null
+            }
+            if (receiver is PollyUnderscore && a is Comparable<*> && b is Comparable<*>) {
+                return (a as Comparable<Any?>).compareTo(b as Any?)
+            }
+            throw NotImplementedError("compare for $args")
+        }
+    },
+    "start" to object : Extension {
+        override fun invoke(vararg args: Any?): Any? {
+            val receiver = args[0]
+            val config = when (args.size >= 2) {
+                true -> args[1]
+                false -> null
+            }
+            if (receiver is PollySpeechRecognition && config is Map<*, *>) {
+                val callback = config["onResult"]
+                if (callback is ArgumentCallback) {
+                    speechRecognitionCallback = callback
+                    if (ContextCompat.checkSelfPermission(
+                                    MainActivity.activity,
+                                    Manifest.permission.RECORD_AUDIO
+                            ) != PackageManager.PERMISSION_GRANTED
+                    ) {
+                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                            ActivityCompat.requestPermissions(
+                                    MainActivity.activity,
+                                    listOf(
+                                            Manifest.permission.RECORD_AUDIO
+                                    ).toTypedArray(),
+                                    SPEECH_REQUEST_CODE
+                            )
+                        }
+                    } else {
+                        val intent = Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH)
+                        intent.putExtra(
+                                RecognizerIntent.EXTRA_LANGUAGE_MODEL,
+                                RecognizerIntent.LANGUAGE_MODEL_FREE_FORM
+                        )
+                        if(config.containsKey("lang")) {
+                            val lang = config["lang"]
+                            if(lang is String) {
+                                intent.putExtra(
+                                    RecognizerIntent.EXTRA_LANGUAGE,
+                                    lang
+                                )
+                            }
+                        }
+                        MainActivity.activity.startActivityForResult(intent, SPEECH_RESULT_CODE)
+                    }
+                }
+                return null
+            }
+            throw NotImplementedError("start for $args")
+        }
+    },
+    "clear" to object : Extension {
+        override fun invoke(vararg args: Any?): Any? {
+            val receiver = args[0]
+            val path = when (args.size >= 2) {
+                true -> args[1]
+                false -> null
+            }
+            val params = when (args.size >= 3) {
+                true -> args[2]
+                false -> null
+            }
+            if (receiver is PollyNavigation && path is String && params is Map<*, *>?) {
+                receiver.clear(path, params as Map<String, Any?>?)
+                return null
+            }
+            return null
+        }
+    },
+    "push" to object : Extension {
+        override fun invoke(vararg args: Any?): Any? {
+            val receiver = args[0]
+            val path = when (args.size >= 2) {
+                true -> args[1]
+                false -> null
+            }
+            val params = when (args.size >= 3) {
+                true -> args[2]
+                false -> null
+            }
+            if (receiver is PollyNavigation && path is String && params is Map<*, *>?) {
+                receiver.push(path, params as Map<String, Any?>?)
+                return null
+            }
+            if (receiver is PollyToaster && path is String) {
+                val toaster = state?.get("toaster")
+                if (toaster is Map<*, *>) {
+                    val queue = toaster["queue"]
+                    if (queue is MutableList<*>) {
+                        val toast = mutableMapOf<String, Any?>(
+                                "message" to path,
+                                "key" to generateName(),
+                                "animation" to "normal-in"
+                        )
+                        (queue as MutableList<MutableMap<String, Any?>>).add(toast)
+                    }
+                    val curr = toaster["curr"]
+                    if (curr is MutableMap<*, *>) {
+                        val key = curr["key"]
+                        if (hasValue(key).not()) {
+                            receiver.next()
+                        }
+                    }
+                }
+                return null
+            }
+            throw NotImplementedError("push for $args")
+        }
+    },
+    "moment" to object : Extension {
+        override fun invoke(vararg args: Any?): Any? {
+            val ms = when (args.size >= 2) {
+                true -> args[1]
+                false -> null
+            }
+            if (ms is Double) {
+                return PollyMoment(ms)
+            }
+            throw NotImplementedError("moment for $args")
+        }
+    },
+    "includes" to object : Extension {
+        override fun invoke(vararg args: Any?): Any? {
+            val receiver = args[0]
+            val list = when (args.size >= 2) {
+                true -> args[1]
+                false -> null
+            }
+            val needle = when (args.size >= 3) {
+                true -> args[2]
+                false -> null
+            }
+            if (receiver is PollyUnderscore && list is List<*>) {
+                return list.contains(needle)
+            }
+            throw NotImplementedError("includes for $args")
+        }
+    },
+    "split" to object : Extension {
+        override fun invoke(vararg args: Any?): Any? {
+            val receiver = args[0]
+            val source = when (args.size >= 2) {
+                true -> args[1]
+                false -> null
+            }
+            val token = when (args.size >= 3) {
+                true -> args[2]
+                false -> null
+            }
+            if(receiver is PollyUnderscore && source is String && token is String) {
+                return source.split(Regex(token))
+            }
+            throw NotImplementedError("toLowerCase for $args")
+        }
+    },
+    "toLowerCase" to object : Extension {
+        override fun invoke(vararg args: Any?): Any? {
+            val receiver = args[0]
+            val string = when (args.size >= 2) {
+                true -> args[1]
+                false -> null
+            }
+            if(receiver is PollyUnderscore && string is String) {
+                return string.toLowerCase()
+            }
+            throw NotImplementedError("toLowerCase for $args")
+        }
+    },
+    "toString" to object : Extension {
+        override fun invoke(vararg args: Any?): Any? {
+            val receiver = args[0]
+            val radix = when (args.size >= 2) {
+                true -> args[1]
+                false -> null
+            }
+            if (receiver is Double && radix is Double) {
+                return receiver.toBigDecimal().toPlainString().split(".").map {
+                    it.toLong().toString(radix.toInt())
+                }.joinToString(".")
+            }
+            if (receiver is PollyUnderscore) {
+                if(radix is Double) {
+                    val otherSymbols = DecimalFormatSymbols()
+                    val df = DecimalFormat("#.##########", otherSymbols)
+                    return df.format(radix)
+                }
+                return "$radix"
+            }
+            throw NotImplementedError("toString for $args")
+        }
+    },
+    "substr" to object : Extension {
+        override fun invoke(vararg args: Any?): Any? {
+            val receiver = args[0]
+            val startIndex = when (args.size >= 2) {
+                true -> args[1]
+                false -> null
+            }
+            val endIndex = when (args.size >= 3) {
+                true -> args[2]
+                false -> null
+            }
+            if (receiver is String && startIndex is Double && endIndex is Double) {
+                return receiver.substring(startIndex.toInt(), endIndex.toInt())
+            }
+            if (receiver is String && startIndex is Double) {
+                return receiver.substring(startIndex.toInt())
+            }
+            throw NotImplementedError("substr for $args")
+        }
+    },
+    "assign" to object : Extension {
+        override fun invoke(vararg args: Any?): Any? {
+            val receiver = args[0]
+            val target = when (args.size >= 2) {
+                true -> args[1]
+                false -> null
+            }
+            val overwrite = when (args.size >= 1) {
+                true -> args.asSequence().toList().subList(1, args.size)
+                false -> null
+            }
+            val allMaps = overwrite?.all {
+                it is MutableMap<*, *>
+            } ?: false
+            if (receiver is PollyUnderscore && target is MutableMap<*, *> && allMaps) {
+                return overwrite?.fold(mutableMapOf<String, Any?>()) { total, item ->
+                    total.putAll(item as MutableMap<String, Any?>)
+                    total
+                }
+            }
+            throw NotImplementedError("assign for $args")
+        }
+    },
+    "reduce" to object : Extension {
+        override fun invoke(vararg args: Any?): Any? {
+            val receiver = args[0]
+            val list = when (args.size >= 2) {
+                true -> args[1]
+                false -> null
+            }
+            val callback = when (args.size >= 3) {
+                true -> args[2]
+                false -> null
+            }
+            val initial = when (args.size >= 4) {
+                true -> args[3]
+                false -> null
+            }
+            if (receiver is PollyUnderscore && list is List<*> && callback is ArgumentCallback) {
+                return list.foldIndexed(initial) { index, total, item ->
+                    callback.invoke(
+                            mapOf(
+                                    "item" to item,
+                                    "total" to total,
+                                    "index" to index.toDouble()
+                            )
+                    )
+                }
+            }
+            throw NotImplementedError("reduce for $args")
+        }
+    },
+    "speak" to object : Extension {
+        override fun invoke(vararg args: Any?): Any? {
+            val receiver = args[0]
+            val config = when (args.size >= 2) {
+                true -> args[1]
+                false -> null
+            }
+            if (receiver is PollyTTS && config is Map<*, *>) {
+                val lang = config["lang"] as? String ?: "en-US"
+                val rate = (config["rate"] as? Double ?: 1).toFloat()
+                val text = config["text"] as? String ?: ""
+                val tts = MainActivity.activity.tts
+                tts.language = Locale(lang)
+                tts.setSpeechRate(rate)
+                tts.speak(text, TextToSpeech.QUEUE_FLUSH, null)
+                return null
+            }
+            throw NotImplementedError("speak for $args")
+        }
+    },
+    "replace" to object : Extension {
+        override fun invoke(vararg args: Any?): Any? {
+            val receiver = args[0]
+            val haystack = when (args.size >= 2) {
+                true -> args[1]
+                false -> null
+            }
+            val needle = when (args.size >= 3) {
+                true -> args[2]
+                false -> null
+            }
+            val replace = when (args.size >= 4) {
+                true -> args[3]
+                false -> null
+            }
+            if (receiver is PollyUnderscore && haystack is String && needle is String && replace is String) {
+                return haystack.replace(Regex(needle), replace)
+            }
+            throw NotImplementedError("replace for $args")
+        }
+    },
+    "forEach" to object : Extension {
+        override fun invoke(vararg args: Any?): Any? {
+            val receiver = args[0]
+            val list = when (args.size >= 2) {
+                true -> args[1]
+                false -> null
+            }
+            val callback = when (args.size >= 3) {
+                true -> args[2]
+                false -> null
+            }
+            if (receiver is PollyUnderscore && list is List<*> && callback is ArgumentCallback) {
+                return list.forEachIndexed { index, item ->
+                    callback.invoke(
+                            mapOf(
+                                    "item" to item,
+                                    "index" to index.toDouble()
+                            )
+                    )
+                }
+            }
+            throw NotImplementedError("map for $args")
+        }
+    },
+    "log" to object : Extension {
+        override fun invoke(vararg args: Any?): Any? {
+            val receiver = args[0]
+            val values = args.asList().subList(1, args.size)
+            if (receiver is Console) {
+                Log.d("console.log", "$values")
+                return null
+            }
+            throw NotImplementedError("log for $args")
+        }
+    },
+    "pow" to object : Extension {
+        override fun invoke(vararg args: Any?): Any? {
+            val receiver = args[0]
+            val a = when (args.size >= 2) {
+                true -> args[1]
+                false -> null
+            }
+            val b = when (args.size >= 3) {
+                true -> args[2]
+                false -> null
+            }
+            if (receiver is PollyMath && a is Double && b is Double) {
+                return a.pow(b)
+            }
+            throw NotImplementedError("pow for $args")
+        }
+    },
+    "map" to object : Extension {
+        override fun invoke(vararg args: Any?): Any? {
+            val receiver = args[0]
+            val list = when (args.size >= 2) {
+                true -> args[1]
+                false -> null
+            }
+            val callback = when (args.size >= 3) {
+                true -> args[2]
+                false -> null
+            }
+            if (receiver is PollyUnderscore && list is List<*> && callback is ArgumentCallback) {
+                return list.mapIndexed { index, item ->
+                    callback.invoke(
+                            mapOf(
+                                    "item" to item,
+                                    "index" to index.toDouble()
+                            )
+                    )
+                }
+            }
+            throw NotImplementedError("map for $args")
+        }
+    },
+    "filter" to object : Extension {
+        override fun invoke(vararg args: Any?): Any? {
+            val receiver = args[0]
+            val list = when (args.size >= 2) {
+                true -> args[1]
+                false -> null
+            }
+            val callback = when (args.size >= 3) {
+                true -> args[2]
+                false -> null
+            }
+            if (receiver is PollyUnderscore && list is List<*> && callback is ArgumentCallback) {
+                return list.filter { item ->
+                    hasValue(
+                            callback.invoke(
+                                    mapOf(
+                                            "item" to item
+                                    )
+                            )
+                    )
+                }
+            }
+            throw NotImplementedError("filter for $args")
+        }
+    },
+    "indexOf" to object : Extension {
+        override fun invoke(vararg args: Any?): Any? {
+            val receiver = args[0]
+            val list = when (args.size >= 2) {
+                true -> args[1]
+                false -> null
+            }
+            val callback = when (args.size >= 3) {
+                true -> args[2]
+                false -> null
+            }
+            if (receiver is PollyUnderscore && list is List<*> && callback is ArgumentCallback) {
+                val item = list.find { item ->
+                    hasValue(
+                            callback.invoke(
+                                    mapOf(
+                                            "item" to item
+                                    )
+                            )
+                    )
+                }
+                return list.indexOf(item).toDouble()
+            }
+            throw NotImplementedError("indexOf for $args")
+        }
+    },
+    "date" to object : Extension {
+        override fun invoke(vararg args: Any?): Any? {
+            val receiver = args[0]
+            val config = when (args.size >= 2) {
+                true -> args[1]
+                false -> null
+            }
+            if (receiver is PollyPicker && config is Map<*, *>) {
+                receiver.date(config as Map<String, Any?>)
+                return null
+            }
+            throw NotImplementedError("date for $args")
+        }
+    },
+    "find" to object : Extension {
+        override fun invoke(vararg args: Any?): Any? {
+            val receiver = args[0]
+            val list = when (args.size >= 2) {
+                true -> args[1]
+                false -> null
+            }
+            val callback = when (args.size >= 3) {
+                true -> args[2]
+                false -> null
+            }
+            val or = when (args.size >= 4) {
+                true -> args[3]
+                false -> null
+            }
+            if (receiver is PollyUnderscore && list is List<*> && callback is ArgumentCallback) {
+                return list.find { item ->
+                    hasValue(
+                            callback.invoke(
+                                    mapOf(
+                                            "item" to item
+                                    )
+                            )
+                    )
+                } ?: or
+            }
+            throw NotImplementedError("find for $args")
+        }
+    },
+    "every" to object : Extension {
+        override fun invoke(vararg args: Any?): Any? {
+            val receiver = args[0]
+            val list = when (args.size >= 2) {
+                true -> args[1]
+                false -> null
+            }
+            val callback = when (args.size >= 3) {
+                true -> args[2]
+                false -> null
+            }
+            if (receiver is PollyUnderscore && list is List<*> && callback is ArgumentCallback) {
+                return list.all { item ->
+                    hasValue(
+                            callback.invoke(
+                                    mapOf(
+                                            "item" to item
+                                    )
+                            )
+                    )
+                }
+            }
+            throw NotImplementedError("every for $args")
+        }
+    },
+    "some" to object : Extension {
+        override fun invoke(vararg args: Any?): Any? {
+            val receiver = args[0]
+            val list = when (args.size >= 2) {
+                true -> args[1]
+                false -> null
+            }
+            val callback = when (args.size >= 3) {
+                true -> args[2]
+                false -> null
+            }
+            if (receiver is PollyUnderscore && list is List<*> && callback is ArgumentCallback) {
+                return list.any { item ->
+                    hasValue(
+                            callback.invoke(
+                                    mapOf(
+                                            "item" to item
+                                    )
+                            )
+                    )
+                }
+            }
+            throw NotImplementedError("some for $args")
+        }
+    },
+    "sort" to object : Extension {
+        override fun invoke(vararg args: Any?): Any? {
+            val receiver = args[0]
+            val list = when (args.size >= 2) {
+                true -> args[1]
+                false -> null
+            }
+            val callback = when (args.size >= 3) {
+                true -> args[2]
+                false -> null
+            }
+            if (receiver is PollyUnderscore && list is List<*> && callback is ArgumentCallback) {
+                return list.sortedWith { a, b ->
+                    (callback.invoke(
+                            mapOf(
+                                    "a" to a,
+                                    "b" to b
+                            )
+                    ) as Number).toInt()
+                }
+            }
+            throw NotImplementedError("sort for $args")
+        }
+    },
+    "concat" to object : Extension {
+        override fun invoke(vararg args: Any?): Any? {
+            val receiver = args[0]
+            val target = when (args.size >= 2) {
+                true -> args[1]
+                false -> null
+            }
+            val rest = when (args.size >= 3) {
+                true -> args.asSequence().toList().subList(2, args.size)
+                false -> null
+            }
+            val isLists = rest?.all {
+                it is List<*>
+            } ?: false
+            if (receiver is PollyUnderscore && target is List<*> && isLists) {
+                return rest?.fold(target) { total, item ->
+                    total + (item as List<Map<String, Any?>>)
+                }
+            }
+            throw NotImplementedError("concat for $args")
+        }
+    },
+    "upsert" to object : Extension {
+        override fun invoke(vararg args: Any?): Any? {
+            val receiver = args[0]
+            val haystack = when (args.size >= 2) {
+                true -> args[1]
+                false -> null
+            }
+            val needle = when (args.size >= 3) {
+                true -> args[2]
+                false -> null
+            }
+            if (receiver is PollyUnderscore && haystack is List<*> && needle is MutableMap<*, *>) {
+                val item = haystack.find {
+                    it is MutableMap<*, *> && it["key"] == needle["key"]
+                }
+                if (item is MutableMap<*, *>) {
+                    val index = haystack.indexOf(item)
+                    return haystack.subList(0, index) + listOf(needle) + haystack.subList(
+                            index + 1,
+                            haystack.size
+                    )
+                } else {
+                    return haystack + listOf(needle)
+                }
+            }
+            throw NotImplementedError("upsert for $args")
+        }
+    },
+    "in" to object : Extension {
+        override fun invoke(vararg args: Any?): Any? {
+            val receiver = args[0]
+            val target = when (args.size >= 2) {
+                true -> args[1]
+                false -> null
+            }
+            val direction = when (args.size >= 3) {
+                true -> args[2]
+                false -> null
+            }
+            val callback = when (args.size >= 4) {
+                true -> args[3]
+                false -> null
+            }
+            if (receiver is PollyAnimate && target is MutableMap<*, *> && direction is String && callback is ArgumentCallback?) {
+                val adapter = target as MutableMap<String, Any?>
+                adapter["animation"] = "$direction-in"
+                setTimeout({
+                    adapter["animation"] = ""
+                    state = callback?.invoke(
+                        mapOf(
+                            "item" to adapter
+                        )
+                    ) as? MutableMap<String, Any?>
+                }, TIMEOUT * 2)
+                return adapter
+            }
+            throw NotImplementedError("in for $args")
+        }
+    },
+    "slice" to object : Extension {
+        override fun invoke(vararg args: Any?): Any? {
+            val receiver = args[0]
+            val target = when (args.size >= 2) {
+                true -> args[1]
+                false -> null
+            }
+            val from = when (args.size >= 3) {
+                true -> args[2]
+                false -> null
+            }
+            val to = when (args.size >= 4) {
+                true -> args[3]
+                false -> null
+            }
+            if (receiver is PollyUnderscore && target is MutableList<*> && from is Double && to is Double) {
+                return target.subList(from.toInt(), to.toInt())
+            }
+            throw NotImplementedError("slice for $args")
+        }
+    },
+    "out" to object : Extension {
+        override fun invoke(vararg args: Any?): Any? {
+            val receiver = args[0]
+            val target = when (args.size >= 2) {
+                true -> args[1]
+                false -> null
+            }
+            val direction = when (args.size >= 3) {
+                true -> args[2]
+                false -> null
+            }
+            val callback = when (args.size >= 4) {
+                true -> args[3]
+                false -> null
+            }
+            if (receiver is PollyAnimate && target is MutableMap<*, *> && direction is String && callback is ArgumentCallback?) {
+                val adapter = target as MutableMap<String, Any?>
+                adapter["animation"] = "$direction-out"
+                setTimeout({
+                    adapter["animation"] = ""
+                    state = callback?.invoke(
+                        mapOf(
+                            "item" to adapter
+                        )
+                    ) as? MutableMap<String, Any?>
+                }, TIMEOUT * 2)
+                return adapter
+            }
+            throw NotImplementedError("out for $args")
+        }
+    }
+)
+
 class JSON {
     companion object {
         fun parse(input: String?): MutableMap<String, Any?>? {
@@ -857,7 +1662,7 @@ ${tabs}}${otherwise}`;
 		return `object : ArgumentCallback {
 ${tabs}\toverride fun invoke(args: Any?): Any? {
 ${body.join("\n")}
-${tabs}\t\treturn state
+${tabs}\t\treturn null
 ${tabs}\t}
 ${tabs}}`;
 	}
