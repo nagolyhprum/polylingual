@@ -14,13 +14,16 @@ import android.os.Build
 import android.os.Handler
 import android.os.Looper
 import android.speech.RecognizerIntent
+import android.speech.tts.TextToSpeech
 import android.util.Log
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import org.json.JSONArray
 import org.json.JSONObject
 import java.text.DecimalFormat
-import java.util.LinkedList
+import java.text.DecimalFormatSymbols
+import java.text.SimpleDateFormat
+import java.util.*
 import java.util.concurrent.locks.ReentrantLock
 
 fun executor(max: Int, makeThread: (() -> Unit) -> Unit): (() -> Unit) -> Unit {
@@ -724,7 +727,7 @@ class ProgrammingMoment(
         return formatter.format(calendar.time)
     }
 
-    fun startOf(field: String): PollyMoment {
+    fun startOf(field: String): ProgrammingMoment {
         val cal = Calendar.getInstance()
         cal.timeInMillis = ms.toLong()
         if (listOf("year").contains(field)) {
@@ -745,14 +748,13 @@ class ProgrammingMoment(
         if (listOf("year", "month", "day", "hour", "minute", "second").contains(field)) {
             cal.set(Calendar.MILLISECOND, 0)
         }
-        return PollyMoment(cal.timeInMillis.toDouble())
+        return ProgrammingMoment(cal.timeInMillis.toDouble())
     }
 
     fun valueOf(): Double {
         return ms
     }
 }
-
 
 class JSON {
     companion object {
