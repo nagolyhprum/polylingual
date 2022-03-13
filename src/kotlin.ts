@@ -7,9 +7,16 @@ const remap = {
 };
 
 export const bundle = () => `
+import android.Manifest
+import android.content.Intent
+import android.content.pm.PackageManager
+import android.os.Build
 import android.os.Handler
 import android.os.Looper
+import android.speech.RecognizerIntent
 import android.util.Log
+import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
 import org.json.JSONArray
 import org.json.JSONObject
 import java.text.DecimalFormat
@@ -93,7 +100,7 @@ val extensions = mapOf<String, Extension>(
                         else -> ""
                     }
                 ))
-                val queue = com.android.volley.toolbox.Volley.newRequestQueue(PollyApplication.context)
+                val queue = com.android.volley.toolbox.Volley.newRequestQueue(MainActivity.activity)
                 val url = "https://www.speaknatively.com/api"
                 val stringRequest = object : com.android.volley.toolbox.StringRequest(
                         Method.POST,
@@ -678,37 +685,6 @@ val extensions = mapOf<String, Extension>(
             throw NotImplementedError("upsert for $args")
         }
     },
-    "in" to object : Extension {
-        override fun invoke(vararg args: Any?): Any? {
-            val receiver = args[0]
-            val target = when (args.size >= 2) {
-                true -> args[1]
-                false -> null
-            }
-            val direction = when (args.size >= 3) {
-                true -> args[2]
-                false -> null
-            }
-            val callback = when (args.size >= 4) {
-                true -> args[3]
-                false -> null
-            }
-            if (receiver is PollyAnimate && target is MutableMap<*, *> && direction is String && callback is ArgumentCallback?) {
-                val adapter = target as MutableMap<String, Any?>
-                adapter["animation"] = "$direction-in"
-                setTimeout({
-                    adapter["animation"] = ""
-                    state = callback?.invoke(
-                        mapOf(
-                            "item" to adapter
-                        )
-                    ) as? MutableMap<String, Any?>
-                }, TIMEOUT * 2)
-                return adapter
-            }
-            throw NotImplementedError("in for $args")
-        }
-    },
     "slice" to object : Extension {
         override fun invoke(vararg args: Any?): Any? {
             val receiver = args[0]
@@ -729,39 +705,54 @@ val extensions = mapOf<String, Extension>(
             }
             throw NotImplementedError("slice for $args")
         }
-    },
-    "out" to object : Extension {
-        override fun invoke(vararg args: Any?): Any? {
-            val receiver = args[0]
-            val target = when (args.size >= 2) {
-                true -> args[1]
-                false -> null
-            }
-            val direction = when (args.size >= 3) {
-                true -> args[2]
-                false -> null
-            }
-            val callback = when (args.size >= 4) {
-                true -> args[3]
-                false -> null
-            }
-            if (receiver is PollyAnimate && target is MutableMap<*, *> && direction is String && callback is ArgumentCallback?) {
-                val adapter = target as MutableMap<String, Any?>
-                adapter["animation"] = "$direction-out"
-                setTimeout({
-                    adapter["animation"] = ""
-                    state = callback?.invoke(
-                        mapOf(
-                            "item" to adapter
-                        )
-                    ) as? MutableMap<String, Any?>
-                }, TIMEOUT * 2)
-                return adapter
-            }
-            throw NotImplementedError("out for $args")
-        }
     }
 )
+
+class PollyTTS
+
+class ProgrammingMoment(
+        val ms: Double
+) {
+    fun format(format: String): String {
+        val formatter = SimpleDateFormat(
+                format
+                        .replace("ddd", "E") // show proper day name
+                        .replace("D", "d") // show proper date
+        )
+        val calendar = Calendar.getInstance()
+        calendar.timeInMillis = ms.toLong()
+        return formatter.format(calendar.time)
+    }
+
+    fun startOf(field: String): PollyMoment {
+        val cal = Calendar.getInstance()
+        cal.timeInMillis = ms.toLong()
+        if (listOf("year").contains(field)) {
+            cal.set(Calendar.MONTH, 0)
+        }
+        if (listOf("year", "month").contains(field)) {
+            cal.set(Calendar.DAY_OF_MONTH, 0)
+        }
+        if (listOf("year", "month", "day").contains(field)) {
+            cal.set(Calendar.HOUR, 0)
+        }
+        if (listOf("year", "month", "day", "hour").contains(field)) {
+            cal.set(Calendar.MINUTE, 0)
+        }
+        if (listOf("year", "month", "day", "hour", "minute").contains(field)) {
+            cal.set(Calendar.SECOND, 0)
+        }
+        if (listOf("year", "month", "day", "hour", "minute", "second").contains(field)) {
+            cal.set(Calendar.MILLISECOND, 0)
+        }
+        return PollyMoment(cal.timeInMillis.toDouble())
+    }
+
+    fun valueOf(): Double {
+        return ms
+    }
+}
+
 
 class JSON {
     companion object {
