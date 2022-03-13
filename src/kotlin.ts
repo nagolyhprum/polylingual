@@ -772,7 +772,7 @@ val extensions = mapOf<String, Extension>(
 
 export const render = (code: ProgrammingLanguage | undefined, tabs: string): unknown => {
 	if(code === null) return "null";
-	if(code === undefined) return "";
+	if(code === undefined) return "null";
 	switch (code._name) {
 	case "result":
 		return `${tabs}return ${render(code.value, tabs)}`;

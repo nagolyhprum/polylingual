@@ -379,7 +379,7 @@ const remap = {
 };
 
 export const render = (code: ProgrammingLanguage | undefined, tabs: string): unknown => {
-	if(code === undefined) return "";
+	if(code === undefined) return "nil";
 	if(code === null) return "nil";
 	switch (code._name) {
 	case "result":
