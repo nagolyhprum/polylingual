@@ -1088,7 +1088,7 @@ ${tabs}}`;
 		return `${sideEffect ? tabs : ""}invoke(
 ${tabs}\t${target},
 ${tabs}\t"${fun}",
-${tabs}\tlistOf<Any>(
+${tabs}\tlistOf${args.length ? "" : "<Any>"}(
 ${tabs}\t\t${args.join(`,\n${tabs}\t\t`)}
 ${tabs}\t)
 ${tabs})`;
