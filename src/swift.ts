@@ -378,7 +378,8 @@ const remap = {
 	Math: "ProgrammingMath"
 };
 
-export const render = (code: ProgrammingLanguage, tabs: string): unknown => {
+export const render = (code: ProgrammingLanguage | undefined, tabs: string): unknown => {
+	if(code === undefined) return "";
 	if(code === null) return "nil";
 	switch (code._name) {
 	case "result":
