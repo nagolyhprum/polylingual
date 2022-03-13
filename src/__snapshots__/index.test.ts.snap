@@ -52,7 +52,7 @@ exports[`everything renders kotlin 1`] = `
 		)
 	),
 	\\"log\\",
-	listOf(
+	listOf<Any>(
 		\\"empties\\",
 		mutableMapOf<String, Any?>(
 			\\"array\\" to mutableListOf<Any?>(),
@@ -68,7 +68,7 @@ invoke(
 		)
 	),
 	\\"log\\",
-	listOf(
+	listOf<Any>(
 		get(
 			listOf(
 				name
@@ -90,7 +90,7 @@ invoke(
 		)
 	),
 	\\"log\\",
-	listOf(
+	listOf<Any>(
 		get(
 			listOf(
 				name
@@ -105,7 +105,7 @@ invoke(
 		)
 	),
 	\\"log\\",
-	listOf(
+	listOf<Any>(
 		get(
 			listOf(
 				deeply,
@@ -129,7 +129,7 @@ invoke(
 		)
 	),
 	\\"log\\",
-	listOf(
+	listOf<Any>(
 		get(
 			listOf(
 				deeply,
@@ -217,7 +217,7 @@ invoke(
 		)
 	),
 	\\"log\\",
-	listOf(
+	listOf<Any>(
 		mutableMapOf<String, Any?>(
 			\\"diff\\" to get(
 				listOf(
@@ -269,7 +269,7 @@ invoke(
 		)
 	),
 	\\"log\\",
-	listOf(
+	listOf<Any>(
 		invoke(
 			get(
 				listOf(
@@ -277,7 +277,7 @@ invoke(
 				)
 			),
 			\\"reduce\\",
-			listOf(
+			listOf<Any>(
 				mutableListOf<Any?>(
 					(1).toDouble(),
 					(2).toDouble(),
@@ -311,7 +311,7 @@ invoke(
 		)
 	),
 	\\"log\\",
-	listOf(
+	listOf<Any>(
 		get(
 			listOf(
 				(get(
@@ -330,7 +330,7 @@ invoke(
 		)
 	),
 	\\"log\\",
-	listOf(
+	listOf<Any>(
 		get(
 			listOf(
 				(null ?: \\"world\\")
@@ -345,7 +345,7 @@ invoke(
 		)
 	),
 	\\"log\\",
-	listOf(
+	listOf<Any>(
 		mutableMapOf<String, Any?>(
 			\\"yesAndNo\\" to get(
 				listOf(
@@ -384,7 +384,7 @@ if(hasValue((get(
 			)
 		),
 		\\"log\\",
-		listOf(
+		listOf<Any>(
 			\\"name is defined\\"
 		)
 	)
@@ -396,7 +396,7 @@ if(hasValue((get(
 			)
 		),
 		\\"log\\",
-		listOf(
+		listOf<Any>(
 			\\"name is not defined\\"
 		)
 	)
@@ -413,7 +413,7 @@ if(hasValue(not((get(
 			)
 		),
 		\\"log\\",
-		listOf(
+		listOf<Any>(
 			\\"should not happen\\"
 		)
 	)
