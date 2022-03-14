@@ -1036,12 +1036,12 @@ ${tabs})`;
 		return "div(" + code.items.map(it => render(it, tabs)).join(", ") + ")";
 	case "or":
 		return code.items.slice(1).reduce(
-			(bool, next) => `${bool}.or(${render(next, tabs)
-			})`, render(code.items[0], tabs));
+			(bool, next) => `hasValue(${bool}).or(hasValue(${render(next, tabs)
+			}))`, render(code.items[0], tabs));
 	case "and":
 		return code.items.slice(1).reduce(
-			(bool, next) => `${bool}.and(${render(next, tabs)
-			})`, render(code.items[0], tabs));
+			(bool, next) => `hasValue(${bool}).and(hasValue(${render(next, tabs)
+			}))`, render(code.items[0], tabs));
 	case "gt":
 		return `gt(${render(code.a, tabs)}, ${render(code.b, tabs)})`;
 	case "lt":
@@ -1070,7 +1070,7 @@ ${tabs}}${otherwise}`;
 		if(code.name) {
 			return `extensions["${code.name}"] = object : Extension {
 ${tabs}override fun call(vararg list: Any?): Any? {
-${tabs}\tval args = list[1]
+${tabs}\t${code.args.length ? "val args = list[1]" : ""}
 ${body.join("\n")}
 ${tabs}\t\treturn null
 ${tabs}\t}

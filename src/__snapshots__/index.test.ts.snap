@@ -347,28 +347,28 @@ invoke(
 	\\"log\\",
 	listOf(
 		mutableMapOf<String, Any?>(
-			\\"yesAndNo\\" to get(
+			\\"yesAndNo\\" to hasValue(get(
 				listOf(
 					deeply,
 					\\"nested\\", \\"yes\\"
 				)
-			).and(get(
+			)).and(hasValue(get(
 				listOf(
 					deeply,
 					\\"nested\\", \\"no\\"
 				)
-			)),
-			\\"yesOrNo\\" to get(
+			))),
+			\\"yesOrNo\\" to hasValue(get(
 				listOf(
 					deeply,
 					\\"nested\\", \\"yes\\"
 				)
-			).or(get(
+			)).or(hasValue(get(
 				listOf(
 					deeply,
 					\\"nested\\", \\"no\\"
 				)
-			))
+			)))
 		)
 	)
 )
