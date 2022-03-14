@@ -37,7 +37,7 @@ export const invoke = ({
 	args: args.map(useCode),
 	sideEffect,
 	dependencies : Array.from(dependencies)
-});
+}) as ProgrammingLanguage;
 
 const proxy = ({
 	scope,
