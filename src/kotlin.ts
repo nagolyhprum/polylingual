@@ -87,6 +87,11 @@ interface ArgumentCallback {
 }
 
 val extensions = mutableMapOf<String, Extension>(
+    "isSame" to object : Extension {
+        override fun call(vararg args: Any?): Any? {
+            return false
+        }
+    },
     "api" to object : Extension {
         override fun call(vararg args: Any?): Any? {
             val receiver = args[0]
