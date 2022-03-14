@@ -1,6 +1,6 @@
 {
   "name": "polylingual",
-  "version": "0.24.0",
+  "version": "0.25.0",
   "description": "Write code once, use it anywhere",
   "source": "src/index.ts",
   "main": "dist/index.js",
