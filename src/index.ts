@@ -18,7 +18,7 @@ const wrapResult = (result: unknown): unknown => {
 	return result;
 };
 
-const invoke = ({
+export const invoke = ({
 	fun,
 	args,
 	target,
