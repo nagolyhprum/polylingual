@@ -1069,7 +1069,8 @@ ${tabs}}${otherwise}`;
 		];
 		if(code.name) {
 			return `extensions["${code.name}"] = object : Extension {
-${tabs}override fun call(vararg args: Any?): Any? {
+${tabs}override fun call(vararg list: Any?): Any? {
+${tabs}\tval args = list[1]
 ${body.join("\n")}
 ${tabs}\t\treturn null
 ${tabs}\t}
