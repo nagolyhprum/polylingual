@@ -79,16 +79,16 @@ fun background(callback : () -> Unit) {
 }
 
 interface Extension {
-    fun invoke(vararg args: Any?): Any?
+    fun call(vararg args: Any?): Any?
 }
 
 interface ArgumentCallback {
-    fun invoke(args: Any?): Any?
+    fun call(args: Any?): Any?
 }
 
 val extensions = mutableMapOf<String, Extension>(
     "api" to object : Extension {
-        override fun invoke(vararg args: Any?): Any? {
+        override fun call(vararg args: Any?): Any? {
             val receiver = args[0]
             val config = when (args.size >= 2) {
                 true -> args[1]
@@ -112,7 +112,7 @@ val extensions = mutableMapOf<String, Extension>(
                         url,
                         { response ->
                             if(callback is ArgumentCallback) {
-                                callback.invoke(mutableMapOf(
+                                callback.call(mutableMapOf(
                                         "data" to JSON.parse(response)
                                 ))
                             }
@@ -137,7 +137,7 @@ val extensions = mutableMapOf<String, Extension>(
         }
     },
     "compare" to object : Extension {
-        override fun invoke(vararg args: Any?): Any? {
+        override fun call(vararg args: Any?): Any? {
             val receiver = args[0]
             val a = when (args.size >= 2) {
                 true -> args[1]
@@ -154,7 +154,7 @@ val extensions = mutableMapOf<String, Extension>(
         }
     },
     "start" to object : Extension {
-        override fun invoke(vararg args: Any?): Any? {
+        override fun call(vararg args: Any?): Any? {
             val receiver = args[0]
             val config = when (args.size >= 2) {
                 true -> args[1]
@@ -202,7 +202,7 @@ val extensions = mutableMapOf<String, Extension>(
         }
     },
     "moment" to object : Extension {
-        override fun invoke(vararg args: Any?): Any? {
+        override fun call(vararg args: Any?): Any? {
             val ms = when (args.size >= 2) {
                 true -> args[1]
                 false -> null
@@ -214,7 +214,7 @@ val extensions = mutableMapOf<String, Extension>(
         }
     },
     "includes" to object : Extension {
-        override fun invoke(vararg args: Any?): Any? {
+        override fun call(vararg args: Any?): Any? {
             val receiver = args[0]
             val list = when (args.size >= 2) {
                 true -> args[1]
@@ -231,7 +231,7 @@ val extensions = mutableMapOf<String, Extension>(
         }
     },
     "split" to object : Extension {
-        override fun invoke(vararg args: Any?): Any? {
+        override fun call(vararg args: Any?): Any? {
             val receiver = args[0]
             val source = when (args.size >= 2) {
                 true -> args[1]
@@ -248,7 +248,7 @@ val extensions = mutableMapOf<String, Extension>(
         }
     },
     "toLowerCase" to object : Extension {
-        override fun invoke(vararg args: Any?): Any? {
+        override fun call(vararg args: Any?): Any? {
             val receiver = args[0]
             val string = when (args.size >= 2) {
                 true -> args[1]
@@ -261,7 +261,7 @@ val extensions = mutableMapOf<String, Extension>(
         }
     },
     "toString" to object : Extension {
-        override fun invoke(vararg args: Any?): Any? {
+        override fun call(vararg args: Any?): Any? {
             val receiver = args[0]
             val radix = when (args.size >= 2) {
                 true -> args[1]
@@ -284,7 +284,7 @@ val extensions = mutableMapOf<String, Extension>(
         }
     },
     "substr" to object : Extension {
-        override fun invoke(vararg args: Any?): Any? {
+        override fun call(vararg args: Any?): Any? {
             val receiver = args[0]
             val startIndex = when (args.size >= 2) {
                 true -> args[1]
@@ -304,7 +304,7 @@ val extensions = mutableMapOf<String, Extension>(
         }
     },
     "assign" to object : Extension {
-        override fun invoke(vararg args: Any?): Any? {
+        override fun call(vararg args: Any?): Any? {
             val receiver = args[0]
             val target = when (args.size >= 2) {
                 true -> args[1]
@@ -327,7 +327,7 @@ val extensions = mutableMapOf<String, Extension>(
         }
     },
     "reduce" to object : Extension {
-        override fun invoke(vararg args: Any?): Any? {
+        override fun call(vararg args: Any?): Any? {
             val receiver = args[0]
             val list = when (args.size >= 2) {
                 true -> args[1]
@@ -343,7 +343,7 @@ val extensions = mutableMapOf<String, Extension>(
             }
             if (receiver is ProgrammingUnderscore && list is List<*> && callback is ArgumentCallback) {
                 return list.foldIndexed(initial) { index, total, item ->
-                    callback.invoke(
+                    callback.call(
                             mapOf(
                                     "item" to item,
                                     "total" to total,
@@ -356,7 +356,7 @@ val extensions = mutableMapOf<String, Extension>(
         }
     },
     "speak" to object : Extension {
-        override fun invoke(vararg args: Any?): Any? {
+        override fun call(vararg args: Any?): Any? {
             val receiver = args[0]
             val config = when (args.size >= 2) {
                 true -> args[1]
@@ -376,7 +376,7 @@ val extensions = mutableMapOf<String, Extension>(
         }
     },
     "replace" to object : Extension {
-        override fun invoke(vararg args: Any?): Any? {
+        override fun call(vararg args: Any?): Any? {
             val receiver = args[0]
             val haystack = when (args.size >= 2) {
                 true -> args[1]
@@ -397,7 +397,7 @@ val extensions = mutableMapOf<String, Extension>(
         }
     },
     "forEach" to object : Extension {
-        override fun invoke(vararg args: Any?): Any? {
+        override fun call(vararg args: Any?): Any? {
             val receiver = args[0]
             val list = when (args.size >= 2) {
                 true -> args[1]
@@ -409,7 +409,7 @@ val extensions = mutableMapOf<String, Extension>(
             }
             if (receiver is ProgrammingUnderscore && list is List<*> && callback is ArgumentCallback) {
                 return list.forEachIndexed { index, item ->
-                    callback.invoke(
+                    callback.call(
                             mapOf(
                                     "item" to item,
                                     "index" to index.toDouble()
@@ -421,7 +421,7 @@ val extensions = mutableMapOf<String, Extension>(
         }
     },
     "log" to object : Extension {
-        override fun invoke(vararg args: Any?): Any? {
+        override fun call(vararg args: Any?): Any? {
             val receiver = args[0]
             val values = args.asList().subList(1, args.size)
             if (receiver is ProgrammingConsole) {
@@ -432,7 +432,7 @@ val extensions = mutableMapOf<String, Extension>(
         }
     },
     "pow" to object : Extension {
-        override fun invoke(vararg args: Any?): Any? {
+        override fun call(vararg args: Any?): Any? {
             val receiver = args[0]
             val a = when (args.size >= 2) {
                 true -> args[1]
@@ -449,7 +449,7 @@ val extensions = mutableMapOf<String, Extension>(
         }
     },
     "map" to object : Extension {
-        override fun invoke(vararg args: Any?): Any? {
+        override fun call(vararg args: Any?): Any? {
             val receiver = args[0]
             val list = when (args.size >= 2) {
                 true -> args[1]
@@ -461,7 +461,7 @@ val extensions = mutableMapOf<String, Extension>(
             }
             if (receiver is ProgrammingUnderscore && list is List<*> && callback is ArgumentCallback) {
                 return list.mapIndexed { index, item ->
-                    callback.invoke(
+                    callback.call(
                             mapOf(
                                     "item" to item,
                                     "index" to index.toDouble()
@@ -473,7 +473,7 @@ val extensions = mutableMapOf<String, Extension>(
         }
     },
     "filter" to object : Extension {
-        override fun invoke(vararg args: Any?): Any? {
+        override fun call(vararg args: Any?): Any? {
             val receiver = args[0]
             val list = when (args.size >= 2) {
                 true -> args[1]
@@ -486,7 +486,7 @@ val extensions = mutableMapOf<String, Extension>(
             if (receiver is ProgrammingUnderscore && list is List<*> && callback is ArgumentCallback) {
                 return list.filter { item ->
                     hasValue(
-                            callback.invoke(
+                            callback.call(
                                     mapOf(
                                             "item" to item
                                     )
@@ -498,7 +498,7 @@ val extensions = mutableMapOf<String, Extension>(
         }
     },
     "indexOf" to object : Extension {
-        override fun invoke(vararg args: Any?): Any? {
+        override fun call(vararg args: Any?): Any? {
             val receiver = args[0]
             val list = when (args.size >= 2) {
                 true -> args[1]
@@ -511,7 +511,7 @@ val extensions = mutableMapOf<String, Extension>(
             if (receiver is ProgrammingUnderscore && list is List<*> && callback is ArgumentCallback) {
                 val item = list.find { item ->
                     hasValue(
-                            callback.invoke(
+                            callback.call(
                                     mapOf(
                                             "item" to item
                                     )
@@ -524,7 +524,7 @@ val extensions = mutableMapOf<String, Extension>(
         }
     },
     "date" to object : Extension {
-        override fun invoke(vararg args: Any?): Any? {
+        override fun call(vararg args: Any?): Any? {
             val receiver = args[0]
             val config = when (args.size >= 2) {
                 true -> args[1]
@@ -538,7 +538,7 @@ val extensions = mutableMapOf<String, Extension>(
         }
     },
     "find" to object : Extension {
-        override fun invoke(vararg args: Any?): Any? {
+        override fun call(vararg args: Any?): Any? {
             val receiver = args[0]
             val list = when (args.size >= 2) {
                 true -> args[1]
@@ -555,7 +555,7 @@ val extensions = mutableMapOf<String, Extension>(
             if (receiver is ProgrammingUnderscore && list is List<*> && callback is ArgumentCallback) {
                 return list.find { item ->
                     hasValue(
-                            callback.invoke(
+                            callback.call(
                                     mapOf(
                                             "item" to item
                                     )
@@ -567,7 +567,7 @@ val extensions = mutableMapOf<String, Extension>(
         }
     },
     "every" to object : Extension {
-        override fun invoke(vararg args: Any?): Any? {
+        override fun call(vararg args: Any?): Any? {
             val receiver = args[0]
             val list = when (args.size >= 2) {
                 true -> args[1]
@@ -580,7 +580,7 @@ val extensions = mutableMapOf<String, Extension>(
             if (receiver is ProgrammingUnderscore && list is List<*> && callback is ArgumentCallback) {
                 return list.all { item ->
                     hasValue(
-                            callback.invoke(
+                            callback.call(
                                     mapOf(
                                             "item" to item
                                     )
@@ -592,7 +592,7 @@ val extensions = mutableMapOf<String, Extension>(
         }
     },
     "some" to object : Extension {
-        override fun invoke(vararg args: Any?): Any? {
+        override fun call(vararg args: Any?): Any? {
             val receiver = args[0]
             val list = when (args.size >= 2) {
                 true -> args[1]
@@ -605,7 +605,7 @@ val extensions = mutableMapOf<String, Extension>(
             if (receiver is ProgrammingUnderscore && list is List<*> && callback is ArgumentCallback) {
                 return list.any { item ->
                     hasValue(
-                            callback.invoke(
+                            callback.call(
                                     mapOf(
                                             "item" to item
                                     )
@@ -617,7 +617,7 @@ val extensions = mutableMapOf<String, Extension>(
         }
     },
     "sort" to object : Extension {
-        override fun invoke(vararg args: Any?): Any? {
+        override fun call(vararg args: Any?): Any? {
             val receiver = args[0]
             val list = when (args.size >= 2) {
                 true -> args[1]
@@ -629,7 +629,7 @@ val extensions = mutableMapOf<String, Extension>(
             }
             if (receiver is ProgrammingUnderscore && list is List<*> && callback is ArgumentCallback) {
                 return list.sortedWith { a, b ->
-                    (callback.invoke(
+                    (callback.call(
                             mapOf(
                                     "a" to a,
                                     "b" to b
@@ -641,7 +641,7 @@ val extensions = mutableMapOf<String, Extension>(
         }
     },
     "concat" to object : Extension {
-        override fun invoke(vararg args: Any?): Any? {
+        override fun call(vararg args: Any?): Any? {
             val receiver = args[0]
             val target = when (args.size >= 2) {
                 true -> args[1]
@@ -663,7 +663,7 @@ val extensions = mutableMapOf<String, Extension>(
         }
     },
     "upsert" to object : Extension {
-        override fun invoke(vararg args: Any?): Any? {
+        override fun call(vararg args: Any?): Any? {
             val receiver = args[0]
             val haystack = when (args.size >= 2) {
                 true -> args[1]
@@ -691,7 +691,7 @@ val extensions = mutableMapOf<String, Extension>(
         }
     },
     "slice" to object : Extension {
-        override fun invoke(vararg args: Any?): Any? {
+        override fun call(vararg args: Any?): Any? {
             val receiver = args[0]
             val target = when (args.size >= 2) {
                 true -> args[1]
@@ -838,13 +838,15 @@ fun invoke(target: Any?, name: String, args: List<Any?>): Any? {
     val types = args.map {
         it?.javaClass
     }.toTypedArray()
-    try {
-        return target?.javaClass?.getMethod(name, *types)?.invoke(target, *args.toTypedArray())
-    } catch (e: NoSuchMethodException) {
+    if(target != null) {
+        try {
+            return target.javaClass.getMethod(name, *types).invoke(target, *args.toTypedArray())
+        } catch (e: NoSuchMethodException) {
+        }
     }
     val method = extensions[name]
     if (method != null) {
-        return method.invoke(target, *args.toTypedArray())
+        return method.call(target, *args.toTypedArray())
     }
     throw NotImplementedError("$name for $target")
 }
@@ -1067,14 +1069,14 @@ ${tabs}}${otherwise}`;
 		];
 		if(code.name) {
 			return `extensions["${code.name}"] = object : Extension {
-${tabs}override fun invoke(vararg args: Any?): Any? {
+${tabs}override fun call(vararg args: Any?): Any? {
 ${body.join("\n")}
 ${tabs}\t\treturn null
 ${tabs}\t}
 ${tabs}}`;
 		}
 		return `object : ArgumentCallback {
-${tabs}\toverride fun invoke(args: Any?): Any? {
+${tabs}\toverride fun call(args: Any?): Any? {
 ${body.join("\n")}
 ${tabs}\t\treturn null
 ${tabs}\t}

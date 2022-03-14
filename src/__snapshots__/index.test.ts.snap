@@ -284,7 +284,7 @@ invoke(
 					(3).toDouble()
 				),
 				object : ArgumentCallback {
-					override fun invoke(args: Any?): Any? {
+					override fun call(args: Any?): Any? {
 						val total = get(listOf(args, \\"total\\"))
 						val item = get(listOf(args, \\"item\\"))
 						return add(get(
