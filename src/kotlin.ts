@@ -706,17 +706,28 @@ val extensions = mutableMapOf<String, Extension>(
                 true -> args[2]
                 false -> null
             }
-            val to = when (args.size >= 4) {
+            val tempTo = when (args.size >= 4) {
                 true -> args[3]
                 false -> null
             }
-            if (receiver is ProgrammingUnderscore && target is MutableList<*> && from is Double && to is Double) {
-                if(to > target.size) {
-                    return target.subList(from.toInt(), target.size)
+            if (receiver is ProgrammingUnderscore && target is MutableList<*> && from is Double && tempTo is Double?) {
+                val to = tempTo ?: target.size.toDouble()
+                return if(to > target.size) {
+                    target.subList(from.toInt(), target.size)
                 } else if(to < 0) {
-                    return target.subList(from.toInt(), (target.size + to).toInt())
+                    target.subList(from.toInt(), (target.size + to).toInt())
                 } else {
-                    return target.subList(from.toInt(), to.toInt())
+                    target.subList(from.toInt(), to.toInt())
+                }
+            }
+            if (receiver is ProgrammingUnderscore && target is String && from is Double && tempTo is Double?) {
+                val to = tempTo ?: target.length.toDouble()
+                return if(to > target.length) {
+                    target.substring(from.toInt(), target.length)
+                } else if(to < 0) {
+                    target.substring(from.toInt(), (target.length + to).toInt())
+                } else {
+                    target.substring(from.toInt(), to.toInt())
                 }
             }
             throw NotImplementedError("slice for $args")
