@@ -90,11 +90,11 @@ val extensions = mutableMapOf<String, Extension>(
     "isSame" to object : Extension {
         override fun call(vararg args: Any?): Any? {
             val receiver = args[0]
-            val unit = when (args.size >= 2) {
+            val time = when (args.size >= 2) {
                 true -> args[1]
                 false -> null
             }
-            val time = when (args.size >= 3) {
+            val unit = when (args.size >= 3) {
                 true -> args[2]
                 false -> null
             }
