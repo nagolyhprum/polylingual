@@ -89,7 +89,25 @@ interface ArgumentCallback {
 val extensions = mutableMapOf<String, Extension>(
     "isSame" to object : Extension {
         override fun call(vararg args: Any?): Any? {
-            return false
+            val receiver = args[0]
+            val unit = when (args.size >= 2) {
+                true -> args[1]
+                false -> null
+            }
+            val time = when (args.size >= 3) {
+                true -> args[2]
+                false -> null
+            }
+            if(receiver is ProgrammingMoment && unit is String && time is Double) {
+                val moment = Calendar.getInstance()
+                moment.timeInMillis = receiver.ms.toLong()
+                val compare = Calendar.getInstance()
+                compare.timeInMillis = time.toLong()
+                if(unit == "day") {
+                    return moment.get(Calendar.YEAR) == compare.get(Calendar.YEAR) && moment.get(Calendar.MONTH) == compare.get(Calendar.MONTH) && moment.get(Calendar.DAY_OF_MONTH) == compare.get(Calendar.DAY_OF_MONTH)
+                }
+            }
+            throw NotImplementedError("isSame for $args")
         }
     },
     "api" to object : Extension {
