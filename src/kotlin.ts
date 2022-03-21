@@ -28,6 +28,13 @@ import java.util.*
 import java.util.concurrent.locks.ReentrantLock
 import kotlin.math.pow
 
+fun getIdentifier(input : Any?) : Any? {
+    if(input is Map<*, *>) {
+        return input["key"] ?: input["id"]
+    }
+    return null
+}
+
 fun executor(max: Int, makeThread: (() -> Unit) -> Unit): (() -> Unit) -> Unit {
     val lock = ReentrantLock()
     val queue = LinkedList<() -> Unit>()
@@ -698,7 +705,7 @@ val extensions = mutableMapOf<String, Extension>(
             }
             if (receiver is ProgrammingUnderscore && haystack is List<*> && needle is MutableMap<*, *>) {
                 val item = haystack.find {
-                    it is MutableMap<*, *> && it["key"] == needle["key"]
+                    it is MutableMap<*, *> && getIdentifier(it) == getIdentifier(needle)
                 }
                 if (item is MutableMap<*, *>) {
                     val index = haystack.indexOf(item)
