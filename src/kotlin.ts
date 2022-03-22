@@ -737,24 +737,24 @@ val extensions = mutableMapOf<String, Extension>(
             }
             if (receiver is ProgrammingUnderscore && target is MutableList<*> && from is Double && tempTo is Double?) {
                 val to = tempTo ?: target.size.toDouble()
-                return if(from >= to) {
-                    mutableListOf()
-                } else if(to > target.size) {
+                return if(to > target.size) {
                     target.subList(from.toInt(), target.size)
                 } else if(to < 0) {
                     target.subList(from.toInt(), (target.size + to).toInt())
+                } else if(from >= to) {
+                    mutableListOf()
                 } else {
                     target.subList(from.toInt(), to.toInt())
                 }
             }
             if (receiver is ProgrammingUnderscore && target is String && from is Double && tempTo is Double?) {
                 val to = tempTo ?: target.length.toDouble()
-                return if(from >= to) {
-                    ""
-                } else if(to > target.length) {
+                return if(to > target.length) {
                     target.substring(from.toInt(), target.length)
                 } else if(to < 0) {
                     target.substring(from.toInt(), (target.length + to).toInt())
+                } else if(from >= to) {
+                    ""
                 } else {
                     target.substring(from.toInt(), to.toInt())
                 }
