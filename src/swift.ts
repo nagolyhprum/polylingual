@@ -423,9 +423,9 @@ ${tabs})`;
 	case "div":
 		return "div(input : [" + code.items.map(it => render(it, tabs)).join(", ") + "])";
 	case "or":
-		return "(" + code.items.map(it => render(it, tabs)).join(" || ") + ")";
+		return "(" + code.items.map(it => `hasValue(input : ${render(it, tabs)})`).join(" || ") + ")";
 	case "and":
-		return "(" + code.items.map(it => render(it, tabs)).join(" && ") + ")";
+		return "(" + code.items.map(it => `hasValue(input : ${render(it, tabs)})`).join(" && ") + ")";
 	case "gt":
 		return `gt(a : ${render(code.a, tabs)}, b : ${render(code.b, tabs)})`;
 	case "lt":

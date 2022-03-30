@@ -678,28 +678,28 @@ invoke(
 	name : \\"log\\",
 	args : [
 		[
-			\\"yesAndNo\\" : (get(
+			\\"yesAndNo\\" : (hasValue(input : get(
 				root : deeply,
 				path : [
 					\\"nested\\", \\"yes\\"
 				]
-			) && get(
+			)) && hasValue(input : get(
 				root : deeply,
 				path : [
 					\\"nested\\", \\"no\\"
 				]
-			)),
-			\\"yesOrNo\\" : (get(
+			))),
+			\\"yesOrNo\\" : (hasValue(input : get(
 				root : deeply,
 				path : [
 					\\"nested\\", \\"yes\\"
 				]
-			) || get(
+			)) || hasValue(input : get(
 				root : deeply,
 				path : [
 					\\"nested\\", \\"no\\"
 				]
-			))
+			)))
 		]
 	]
 )
