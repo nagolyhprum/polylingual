@@ -3,7 +3,7 @@
 import { ProgrammingLanguage } from "./types";
 
 export const bundle = () => `
-var PollyGlobal : [String : (_ any : [Any?]) -> Any?] = [
+var ProgrammingGlobal : [String : (_ any : [Any?]) -> Any?] = [
     "toString" : { any in
         if(any.count == 1) {
             return "\\(any[0])"
@@ -42,13 +42,13 @@ func setTimeout(ms : Double, callback : @escaping () -> ()) {
     }
 }
 
-var PollyMath : [String : (_ any : [Any?]) -> Any?] = [
+var ProgrammingMath : [String : (_ any : [Any?]) -> Any?] = [
     "random" : { any in
         return Double(arc4random()) / Double(UINT32_MAX)
     }
 ]
 
-var PollyUnderscore : [String : (_ any : [Any?]) -> Any?] = [
+var ProgrammingUnderscore : [String : (_ any : [Any?]) -> Any?] = [
     "compare" : { any in
         if let a = any[0] as? String, let b = any[1] as? String {
             let cr = a.compare(b)
@@ -365,7 +365,7 @@ func invoke(
             return callback(args)
         }
     }
-    if let callback = PollyGlobal[name] as? ([Any?]) -> Any? {
+    if let callback = ProgrammingGlobal[name] as? ([Any?]) -> Any? {
         return callback([target] + args)
     }
     return nil
