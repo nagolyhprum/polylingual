@@ -451,6 +451,11 @@ ${tabs}}${otherwise}`;
 			...code.args.map(it => `${tabs}\tvar ${it} = get(root : args, path : ["${it}"])`),
 			render(code.body, `${tabs}\t`)
 		];
+		if(code.name) {
+			return `ProgrammingGlobal["${code.name}"] = { any in
+${body.join("\n")}
+${tabs}}`;
+		}
 		return `{ (args : Any?) -> Any? in
 ${body.join("\n")}
 ${tabs}}`;
