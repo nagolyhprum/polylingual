@@ -452,8 +452,9 @@ ${tabs}}${otherwise}`;
 			render(code.body, `${tabs}\t`)
 		];
 		if(code.name) {
-			return `ProgrammingGlobal["${code.name}"] = { any in
+			return `${tabs}ProgrammingGlobal["${code.name}"] = { args in
 ${body.join("\n")}
+${tabs}return nil
 ${tabs}}`;
 		}
 		return `{ (args : Any?) -> Any? in
