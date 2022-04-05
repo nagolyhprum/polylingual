@@ -635,6 +635,7 @@ invoke(
 						root : item,
 						path : []
 					)])
+					return nil
 				},
 				Double(0)
 			]

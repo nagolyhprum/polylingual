@@ -454,11 +454,12 @@ ${tabs}}${otherwise}`;
 		if(code.name) {
 			return `${tabs}ProgrammingGlobal["${code.name}"] = { args in
 ${body.join("\n")}
-${tabs}return nil
+${tabs}\treturn nil
 ${tabs}}`;
 		}
 		return `{ (args : Any?) -> Any? in
 ${body.join("\n")}
+${tabs}\treturn nil
 ${tabs}}`;
 	}
 	case "invoke": {
