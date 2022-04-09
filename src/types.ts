@@ -10,7 +10,7 @@ export type ProgrammingUnderscore = {
     }) => ProgrammingLanguage, initial: U) => U
     indexOf: <T>(items: T[], callback: (args: {
         item: T
-    }) => boolean) => number
+    }) => ProgrammingLanguage) => number
     some: <T>(items: T[], callback: (args: {
         item: T
     }) => ProgrammingLanguage) => boolean
