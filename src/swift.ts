@@ -453,7 +453,7 @@ ${tabs}}${otherwise}`;
 		];
 		if(code.name) {
 			return `${tabs}ProgrammingGlobal["${code.name}"] = { list in
-${tabs}\t${code.args.length ? "val args = list[1]" : ""}
+${tabs}\t${code.args.length ? "let args = list[1]" : ""}
 ${body.join("\n")}
 ${tabs}\treturn nil
 ${tabs}}`;
