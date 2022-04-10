@@ -452,7 +452,8 @@ ${tabs}}${otherwise}`;
 			render(code.body, `${tabs}\t`)
 		];
 		if(code.name) {
-			return `${tabs}ProgrammingGlobal["${code.name}"] = { args in
+			return `${tabs}ProgrammingGlobal["${code.name}"] = { list in
+${tabs}\t${code.args.length ? "val args = list[1]" : ""}
 ${body.join("\n")}
 ${tabs}\treturn nil
 ${tabs}}`;

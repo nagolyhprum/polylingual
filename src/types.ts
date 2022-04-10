@@ -3,7 +3,7 @@ export type ProgrammingUnderscore = {
     split: (input : string, token : string) => string[],
     toString: (input : unknown) => string  
     replace: (haystack: string, needle: string, replace: string) => string
-    slice: <T>(items: T[] | string, from : number, to?: number) => T[]
+    slice: <S, T extends string | Array<S>>(items: T, from : number, to?: number) => T
     reduce: <T, U>(items: T[], callback: (args: {
         item: T,
         total: U
