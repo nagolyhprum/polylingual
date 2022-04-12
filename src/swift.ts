@@ -11,10 +11,12 @@ var ProgrammingGlobal : [String : (_ any : [Any?]) -> Any?] = [
                     let start = target.index(target.startIndex, offsetBy: Int(from))
                     let end = target.index(target.startIndex, offsetBy: target.count + Int(to))
                     return String(target[start..<end])
-                } else {
+                } else if(to > from) {
                     let start = target.index(target.startIndex, offsetBy: Int(from))
                     let end = target.index(target.startIndex, offsetBy: Int(to))
                     return String(target[start..<end])
+                } else {
+                    return ""
                 }
             } else {
                 let start = target.index(target.startIndex, offsetBy: Int(from))
@@ -28,10 +30,12 @@ var ProgrammingGlobal : [String : (_ any : [Any?]) -> Any?] = [
                     let start = target.index(target.startIndex, offsetBy: Int(from))
                     let end = target.index(target.startIndex, offsetBy: target.count + Int(to))
                     return Array(target[start..<end])
-                } else {
+                } else if(to > from) {
                     let start = target.index(target.startIndex, offsetBy: Int(from))
                     let end = target.index(target.startIndex, offsetBy: Int(to))
                     return Array(target[start..<end])
+                } else {
+                    return []
                 }
             } else {
                 let start = target.index(target.startIndex, offsetBy: Int(from))
