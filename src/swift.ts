@@ -4,6 +4,43 @@ import { ProgrammingLanguage } from "./types";
 
 export const bundle = () => `
 var ProgrammingGlobal : [String : (_ any : [Any?]) -> Any?] = [
+    "slice" : { any in
+        if let target = any[0] as? String, let from = any[1] as? Double {
+            if any.count >= 3, let to = any[2] as? Double {
+                if(to < 0) {
+                    let start = target.index(target.startIndex, offsetBy: Int(from))
+                    let end = target.index(target.startIndex, offsetBy: target.count + Int(to))
+                    return String(target[start..<end])
+                } else {
+                    let start = target.index(target.startIndex, offsetBy: Int(from))
+                    let end = target.index(target.startIndex, offsetBy: Int(to))
+                    return String(target[start..<end])
+                }
+            } else {
+                let start = target.index(target.startIndex, offsetBy: Int(from))
+                let end = target.index(target.startIndex, offsetBy: target.count)
+                return String(target[start..<end])
+            }
+        }
+        if let target = any[0] as? [Any?], let from = any[1] as? Double {
+            if any.count >= 3, let to = any[2] as? Double {
+                if(to < 0) {
+                    let start = target.index(target.startIndex, offsetBy: Int(from))
+                    let end = target.index(target.startIndex, offsetBy: target.count + Int(to))
+                    return Array(target[start..<end])
+                } else {
+                    let start = target.index(target.startIndex, offsetBy: Int(from))
+                    let end = target.index(target.startIndex, offsetBy: Int(to))
+                    return Array(target[start..<end])
+                }
+            } else {
+                let start = target.index(target.startIndex, offsetBy: Int(from))
+                let end = target.index(target.startIndex, offsetBy: target.count)
+                return Array(target[start..<end])
+            }
+        }
+        return []
+    },
     "toString" : { any in
         if(any.count == 1) {
             return "\\(any[0])"
