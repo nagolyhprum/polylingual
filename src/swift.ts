@@ -6,7 +6,7 @@ export const bundle = () => `
 var ProgrammingGlobal : [String : (_ any : [Any?]) -> Any?] = [
     "slice" : { any in
         if let target = any[1] as? String, let from = any[2] as? Double {
-            if any.count >= 3, let to = any[3] as? Double {
+            if any.count >= 4, let to = any[3] as? Double {
                 if(to < 0) {
                     let start = target.index(target.startIndex, offsetBy: Int(from))
                     let end = target.index(target.startIndex, offsetBy: target.count + Int(to))
@@ -25,7 +25,7 @@ var ProgrammingGlobal : [String : (_ any : [Any?]) -> Any?] = [
             }
         }
         if let target = any[1] as? [Any?], let from = any[2] as? Double {
-            if any.count >= 3, let to = any[3] as? Double {
+            if any.count >= 4, let to = any[3] as? Double {
                 if(to < 0) {
                     let start = target.index(target.startIndex, offsetBy: Int(from))
                     let end = target.index(target.startIndex, offsetBy: target.count + Int(to))
