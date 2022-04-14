@@ -109,9 +109,9 @@ var ProgrammingUnderscore : [String : (_ any : [Any?]) -> Any?] = [
     "upsert" : { any in
         if let list = any[0] as? [[String : Any?]],
            let item = any[1] as? [String : Any?] {
-           let outerKey = item["key"] as? String
+            let outerKey = getIdentifier(input : item)
             let index = list.firstIndex(where : { member in
-                let innerKey = member["key"] as? String
+                let innerKey = getIdentifier(input : member)
                 return outerKey == innerKey
             }) ?? -1
             if index == -1 {
