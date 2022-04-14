@@ -46,15 +46,15 @@ var ProgrammingGlobal : [String : (_ any : [Any?]) -> Any?] = [
         return []
     },
     "toString" : { any in
-        if(any.count == 1) {
-            return "\\(any[0])"
-        }
-        if let target = any[0] as? Double, let radix = any[1] as? Double {
+        if any.count >= 3, let target = any[1] as? Double, let radix = any[2] as? Double {
             if radix == 16 {
                 return String(format : "%02X", target)
             }
         }
-        return nil
+        if let target = any[1] as? Double {
+            return target.truncatingRemainder(dividingBy: 1) == 0 ? String(format: "%.0f", target) : String(target)
+        }
+        return String(describing: any[1])
     },
     "substr" : { any in
         if
