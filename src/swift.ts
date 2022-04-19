@@ -51,8 +51,15 @@ var ProgrammingGlobal : [String : (_ any : [Any?]) -> Any?] = [
                 return String(format : "%02X", target)
             }
         }
-        if let target = any[1] as? Double {
-            return target.truncatingRemainder(dividingBy: 1) == 0 ? String(format: "%.0f", target) : String(target)
+        if any.count >= 2 {
+            if let target = any[0] as? Double, let radix = any[1] as? Double {
+                if radix == 16 {
+                    return String(format : "%02X", target)
+                }
+            }
+            if let target = any[1] as? Double {
+                return target.truncatingRemainder(dividingBy: 1) == 0 ? String(format: "%.0f", target) : String(target)
+            }
         }
         return String(describing: any[1])
     },
