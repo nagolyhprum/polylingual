@@ -116,16 +116,14 @@ var fetch = (function(url, config) {
 			body : config.body,
 			headers : config.headers
 		}).then(function(res) {
-			if(config.callback) {
-				return res.text().then(function(text) {
-					config.callback({
-						status : res.status,
-						body : text,
-						headers : res.headers
-					});
-					update();
-				})
-			}
+			return res.text().then(function(text) {
+				config.callback({
+					status : res.status,
+					body : text,
+					headers : res.headers
+				});
+				update();
+			})
 		})
 	}
 })();`

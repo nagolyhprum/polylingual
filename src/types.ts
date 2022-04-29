@@ -134,18 +134,21 @@ export type ProgrammingDate = {
 export type ProgrammingTimeout = (callback: () => ProgrammingLanguage, ms: number) => number
 
 export type ProgrammingJSON = {
-    stringify(input: unknown, replacer? : unknown, space? : string): string
-    parse(input: string): unknown
+    stringify(input: any, replacer? : unknown, space? : string): string
+    parse(input: string): any
 }
 
 export type ProgrammingFetch = (url: string, config: {
     body?: string
     headers?: Record<string, string>
     method?: "POST" | "GET" | "PUT" | "DELETE" | "PATCH"
-    callback?: (response: {
-        status: number
-        body: string
-        headers: Record<string, string>
+    callback: (config : {
+        response: {
+            status: number
+            body: string
+            headers: Record<string, string>
+        }
+        error: Error
     }) => ProgrammingLanguage
 }) => ProgrammingLanguage
 
