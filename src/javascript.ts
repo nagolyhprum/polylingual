@@ -118,13 +118,20 @@ var fetch = (function(url, config) {
 		}).then(function(res) {
 			return res.text().then(function(text) {
 				config.callback({
-					status : res.status,
-					body : text,
-					headers : res.headers
+					result : {
+						status : res.status,
+						body : text,
+						headers : res.headers
+					}
 				});
 				update();
 			})
-		})
+		}).catch(function(error) {
+			config.callback({
+				error : error
+			});
+			update();
+		});
 	}
 })();`
 }].filter(({ 
