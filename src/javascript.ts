@@ -118,7 +118,7 @@ var fetch = (function(url, config) {
 		}).then(function(res) {
 			return res.text().then(function(text) {
 				config.callback({
-					result : {
+					response : {
 						status : res.status,
 						body : text,
 						headers : res.headers
