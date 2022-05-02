@@ -11,7 +11,7 @@ export const bundle = (dependencies : Set<string>) => [{
 _.slice = function(list, from, to) {
 	return list.slice(from, to);
 };`},{
-	dependency: ".split",
+	dependency: "_.split",
 	code: `
 _.split = function(input, separator, limit) {
 	return input.split(separator, limit)
