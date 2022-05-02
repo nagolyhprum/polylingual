@@ -1,6 +1,6 @@
 export type ProgrammingUnderscore = {  
     toLowerCase: (input : string) => string,
-    split: (input : string, token : string) => string[],
+    split: (input : string, separator : string, limit?: number) => string[],
     toString: (input : unknown) => string  
     replace: (haystack: string, needle: string, replace: string) => string
     slice: <S, T extends string | Array<S>>(items: T, from : number, to?: number) => T
