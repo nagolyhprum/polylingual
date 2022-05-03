@@ -96,6 +96,17 @@ _.concat = function() {
 };
 `
 },{
+	dependency : "_.indexOf",
+	code : `
+_.indexOf = function(list, callback) {
+	var item = list.find(function(item) {
+		return callback({
+			item : item
+		});
+	});
+	return list.indexOf(item);
+};`
+},{
 	dependency : "_.find",
 	code : `
 _.find = function(list, callback, or) {
