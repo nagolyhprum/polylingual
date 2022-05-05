@@ -54,6 +54,13 @@ _.upsert = function(list, upsert) {
 };
 `
 },{
+	dependency : "_.keys",
+	code : `
+_.keys = function(target) {
+	return Object.keys(target);
+};
+`
+},{
 	dependency : "_.assign",
 	code : `
 _.assign = function() {

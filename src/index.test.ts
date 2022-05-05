@@ -728,6 +728,27 @@ describe("language", () => {
 		]), dependencies);		
 		expect(javascript(output, "")).toMatchSnapshot();
 	});
+	it.only("allows functions to be dot referenced", () => {		
+		const dependencies = new Set([]);
+		const declarations = functions(() => ({
+			get : () => result({
+				name : "test"
+			}) as {
+				name : string
+			}
+		}), {});
+		const output = code(({
+			_
+		}) => block([
+			declarations(),
+			_.assign({
+				name : "test"
+			}).name,
+			_.split(declarations.get().name, "")
+		]), dependencies);		
+		console.log(JSON.stringify(output, null, "\t"));
+		expect(javascript(output, "")).toMatchSnapshot();
+	});
 });
 
 describe("everything", () => {

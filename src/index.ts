@@ -798,13 +798,23 @@ export const functions = <T, ExtendedScope>(
 		scope
 	}));
 	Object.keys(funcs).forEach(key => {
-		ret[key] = (args : any) => invoke({
-			args : args ? [args] : [],
-			fun : key,
-			sideEffect: false,
-			target: undefined,
-			dependencies
-		});
+		ret[key] = (args : any) => {
+			const wrapped = wrapResult({}) as {
+				_code: unknown
+			};
+			wrapped._code = invoke({
+				args : args ? [args] : [],
+				fun : key,
+				sideEffect: false,
+				target: undefined,
+				dependencies
+			});
+			return proxy({
+				dependencies,
+				path: [],
+				scope: wrapped
+			});
+		};
 	});
 	return ret;
 };

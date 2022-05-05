@@ -747,6 +747,18 @@ if(hasValue(input : not(input : hasValue(input : get(
 }"
 `;
 
+exports[`language allows functions to be dot referenced 1`] = `
+"function get() {
+	return {
+		name: \\"test\\"
+	};
+}
+_.assign({
+	name: \\"test\\"
+}).name
+_.split(get().name, \\"\\")"
+`;
+
 exports[`language allows indexing of variables and numbers 1`] = `
 "console.log(state.data[1]);
 console.log(state.data[state.index]);
