@@ -748,6 +748,23 @@ describe("language", () => {
 		]), dependencies);		
 		expect(javascript(output, "")).toMatchSnapshot();
 	});
+	it("supports regexp", () => {	
+		const dependencies = new Set([]);
+		const declarations = functions(() => ({
+			get : () => result({
+				name : "test"
+			}) as {
+				name : string
+			}
+		}), {});
+		const output = code(({
+			_
+		}) => block([
+			_.split(/this is a test/g, "")
+		]), dependencies);		
+		expect(javascript(output, "")).toMatchSnapshot();
+		
+	});
 });
 
 describe("everything", () => {

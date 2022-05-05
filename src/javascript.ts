@@ -14,7 +14,7 @@ _.slice = function(list, from, to) {
 	dependency: "_.split",
 	code: `
 _.split = function(input, separator, limit) {
-	return input.split(separator, limit)
+	return input.split(typeof input === "object" ? new RegExp(separator.pattern, separator.flags) : separator, limit)
 };`
 },{
 	dependency : "_.sort",
@@ -186,6 +186,12 @@ const renderPath = (path: ProgrammingLanguage[], tabs: string) => {
 export const render = (code: ProgrammingLanguage | undefined, tabs: string): string => {
 	if(code === null) return "null";
 	if(code === undefined) return "";
+	if(code instanceof RegExp) {
+		return render({
+			pattern : code.source,
+			flags : code.flags
+		} as any, tabs);
+	}
 	switch (code._name) {
 	case "condition": {
 		const otherwise = code.otherwise ? ` else {
