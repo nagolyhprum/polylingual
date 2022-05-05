@@ -14,7 +14,7 @@ _.slice = function(list, from, to) {
 	dependency: "_.split",
 	code: `
 _.split = function(input, separator, limit) {
-	return input.split(typeof input === "object" ? new RegExp(separator.pattern, separator.flags) : separator, limit)
+	return input.split(typeof separator === "object" ? new RegExp(separator.pattern, separator.flags) : separator, limit)
 };`
 },{
 	dependency : "_.sort",
