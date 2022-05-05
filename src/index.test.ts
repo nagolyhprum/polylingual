@@ -728,7 +728,7 @@ describe("language", () => {
 		]), dependencies);		
 		expect(javascript(output, "")).toMatchSnapshot();
 	});
-	it.only("allows functions to be dot referenced", () => {		
+	it("allows functions to be dot referenced", () => {		
 		const dependencies = new Set([]);
 		const declarations = functions(() => ({
 			get : () => result({
@@ -746,7 +746,6 @@ describe("language", () => {
 			}).name,
 			_.split(declarations.get().name, "")
 		]), dependencies);		
-		console.log(JSON.stringify(output, null, "\t"));
 		expect(javascript(output, "")).toMatchSnapshot();
 	});
 });
