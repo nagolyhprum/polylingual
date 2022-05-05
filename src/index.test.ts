@@ -760,7 +760,7 @@ describe("language", () => {
 		const output = code(({
 			_
 		}) => block([
-			_.split(/this is a test/g, "")
+			_.split("", /this is a test/g)
 		]), dependencies);		
 		expect(javascript(output, "")).toMatchSnapshot();
 		

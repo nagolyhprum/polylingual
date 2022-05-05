@@ -909,10 +909,10 @@ exports[`language supports functions as arguments 1`] = `
 `;
 
 exports[`language supports regexp 1`] = `
-"_.split({
+"_.split(\\"\\", {
 	pattern: \\"this is a test\\",
 	flags: \\"g\\"
-}, \\"\\")"
+})"
 `;
 
 exports[`language supports timeout 1`] = `

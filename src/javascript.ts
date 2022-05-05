@@ -67,6 +67,18 @@ _.assign = function() {
 	return Object.assign.apply(null, arguments);
 };`
 },{
+	dependency : "_.forEach",
+	code : `
+_.forEach = function(list, callback) {
+	return list.forEach(function(item, index, items) {
+		return callback({
+			item : item,
+			index : index,
+			items : items
+		})
+	})
+};`
+},{
 	dependency : "_.map",
 	code : `
 _.map = function(list, callback) {
