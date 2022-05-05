@@ -67,6 +67,12 @@ _.assign = function() {
 	return Object.assign.apply(null, arguments);
 };`
 },{
+	dependency : "_.toLowerCase",
+	code : `
+_.toLowerCase = function(target) {
+	return target.toLowerCase();
+};`
+},{
 	dependency : "_.forEach",
 	code : `
 _.forEach = function(list, callback) {
