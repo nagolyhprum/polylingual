@@ -120,6 +120,13 @@ _.toString = function(input) {
 	return "" + input;
 };`
 },{
+	dependency : "_.join",
+	code : `
+_.join = function(target, separator) {
+	return target.join(separator);
+};
+`
+},{
 	dependency : "_.concat",
 	code : `
 _.concat = function() {

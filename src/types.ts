@@ -1,4 +1,5 @@
 export type ProgrammingUnderscore = {  
+    join: (input : unknown[], separator : string) => string
     keys: <T>(input : T) => Array<keyof T>
     toLowerCase: (input : string) => string,
     split: (input : string, separator : string | RegExp, limit?: number) => string[],

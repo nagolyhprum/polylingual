@@ -469,6 +469,7 @@ export const execute = <T>(
 					}
 				},
 				_: {
+					join: (target : unknown[], separator : string) => target.join(separator),
 					keys: <T>(input : T) : Array<keyof T> => Object.keys(input) as Array<keyof T>,
 					toLowerCase: (input : string) => input.toLowerCase(),
 					split: (input : string, token : string | {
