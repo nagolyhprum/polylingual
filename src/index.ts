@@ -198,6 +198,7 @@ const getProxy = <T>({
 				on : GET_VOID
 			},
 			_: {
+				keys: GET_ARRAY,
 				toLowerCase: GET_STRING,
 				split: GET_ARRAY,
 				toString: GET_STRING,
@@ -468,6 +469,7 @@ export const execute = <T>(
 					}
 				},
 				_: {
+					keys: <T>(input : T) : Array<keyof T> => Object.keys(input) as Array<keyof T>,
 					toLowerCase: (input : string) => input.toLowerCase(),
 					split: (input : string, token : string) => input.split(new RegExp(token)) ,
 					concat: <T>(...items: T[][]) : T[] => {
