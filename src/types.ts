@@ -2,7 +2,7 @@ export type ProgrammingUnderscore = {
     toLowerCase: (input : string) => string,
     split: (input : string, separator : string | RegExp, limit?: number) => string[],
     toString: (input : unknown) => string  
-    replace: (haystack: string, needle: string, replace: string) => string
+    replace: (haystack: string, needle: string | RegExp, replace: string) => string
     slice: <S, T extends string | Array<S>>(items: T, from : number, to?: number) => T
     reduce: <T, U>(items: T[], callback: (args: {
         item: T,

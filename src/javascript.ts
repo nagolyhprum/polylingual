@@ -11,6 +11,12 @@ export const bundle = (dependencies : Set<string>) => [{
 _.slice = function(list, from, to) {
 	return list.slice(from, to);
 };`},{
+	dependency: "_.replace",
+	code: `
+_.replace = function(input, find, replace) {
+	return input.replace(typeof find === "object" ? new RegExp(find.pattern, find.flags) : find, replace)
+};`
+},{
 	dependency: "_.split",
 	code: `
 _.split = function(input, separator, limit) {
