@@ -471,7 +471,12 @@ export const execute = <T>(
 				_: {
 					keys: <T>(input : T) : Array<keyof T> => Object.keys(input) as Array<keyof T>,
 					toLowerCase: (input : string) => input.toLowerCase(),
-					split: (input : string, token : string) => input.split(new RegExp(token)) ,
+					split: (input : string, token : string | {
+						pattern : string
+						flags : string
+					}) => {
+						return input.split(typeof token === "string" ? token : new RegExp(token.pattern, token.flags));
+					},
 					concat: <T>(...items: T[][]) : T[] => {
 						return items.reduce((total, list) => list ? [...total, ...list] : total, [] as T[]);
 					},
@@ -482,11 +487,14 @@ export const execute = <T>(
 						}
 						return items.slice(from, to);
 					},
-					replace: (haystack: string, needle: string, replace: string) => {
+					replace: (haystack: string, needle: string | {
+						pattern : string
+						flags : string
+					}, replace: string) => {
 						if(!haystack) {
 							return "";
 						}
-						return haystack.replace(new RegExp(needle, "g"), replace);
+						return haystack.replace(typeof needle === "string" ? needle : new RegExp(needle.pattern, needle.flags), replace);
 					},
 					reduce: <T, U>(items: T[], callback: (args: {
 						item: T,
