@@ -198,6 +198,7 @@ const getProxy = <T>({
 				on : GET_VOID
 			},
 			_: {
+				join: GET_STRING,
 				keys: GET_ARRAY,
 				toLowerCase: GET_STRING,
 				split: GET_ARRAY,
