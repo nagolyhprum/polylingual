@@ -103,6 +103,18 @@ _.map = function(list, callback) {
 	})
 };`
 },{
+	dependency : "_.shuffle",
+	code : `
+_.shuffle = function(array) {
+	for(let i = 0; i < array.length; ++i) {
+		var j = Math.floor(Math.random() * array.length);
+		var temp = array[i];
+		array[i] = array[j];
+		array[j] = temp;
+	}
+	return array;
+};`
+},{
 	dependency : "_.some",
 	code : `
 _.some = function(list, callback) {

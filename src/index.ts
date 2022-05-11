@@ -218,7 +218,8 @@ const getProxy = <T>({
 				concat: GET_ARRAY,
 				assign: GET_OBJECT,
 				find: GET_OBJECT,
-				upsert: GET_ARRAY
+				upsert: GET_ARRAY,
+				shuffle: GET_ARRAY,
 			},
 			...scope
 		},
@@ -604,6 +605,15 @@ export const execute = <T>(
 					},
 					includes: <E>(haystack : E[], needle : E) => {
 						return haystack.includes(needle);
+					},
+					shuffle: <E>(array : E[]) : E[] => {
+						for(let i = 0; i < array.length; ++i) {
+							const j = Math.floor(Math.random() * array.length);
+							const temp = array[i];
+							array[i] = array[j];
+							array[j] = temp;
+						}
+						return array;
 					},
 					sort : <E>(array : E[], sort : (arg : { a : E, b : E }) => number) => {
 						return array.sort((a, b) => {
