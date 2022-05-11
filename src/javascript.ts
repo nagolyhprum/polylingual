@@ -103,6 +103,32 @@ _.map = function(list, callback) {
 	})
 };`
 },{
+	dependency : "_.some",
+	code : `
+_.some = function(list, callback) {
+	return list.some(function(item) {
+		return callback({
+			item : item
+		})
+	})
+};`
+},{
+	dependency : "_.every",
+	code : `
+_.every = function(list, callback) {
+	return list.every(function(item) {
+		return callback({
+			item : item
+		})
+	})
+};`
+},{
+	dependency : "_.includes",
+	code : `
+_.includes = function(list, item) {
+	return list.includes(item)
+};`
+},{
 	dependency : "_.filter",
 	code : `
 _.filter = function(list, callback) {

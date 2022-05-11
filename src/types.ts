@@ -22,7 +22,7 @@ export type ProgrammingUnderscore = {
     forEach: <T>(items: T[], callback: (args: {
         item: T
         index: number
-    }) => ProgrammingLanguage) => void
+    }) => ProgrammingLanguage) => ProgrammingLanguage
     map: <T, U>(items: T[], callback: (args: {
         item: T
         index: number
