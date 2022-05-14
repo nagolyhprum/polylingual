@@ -47,6 +47,7 @@ export type ProgrammingUnderscore = {
     } | {
         key: string | number
     }>(list: T[], item: T) => T[]
+    shuffle: <T>(list : T[]) => T[]
 }
 
 export type ProgrammingLanguage = ({
