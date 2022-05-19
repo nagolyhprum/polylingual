@@ -37,9 +37,10 @@ _.sort = function(list, callback) {
 	dependency : "_.reduce",
 	code : `
 _.reduce = function(list, callback, start) {
-	return list.reduce(function(total, item) {
+	return list.reduce(function(total, item, index) {
 		return callback({
 			total : total,
+			index : index,
 			item : item
 		})
 	}, start);

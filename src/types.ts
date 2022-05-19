@@ -8,6 +8,7 @@ export type ProgrammingUnderscore = {
     slice: <S, T extends string | Array<S>>(items: T, from : number, to?: number) => T
     reduce: <T, U>(items: T[], callback: (args: {
         item: T,
+        index: number,
         total: U
     }) => ProgrammingLanguage, initial: U) => U
     indexOf: <T>(items: T[], callback: (args: {
