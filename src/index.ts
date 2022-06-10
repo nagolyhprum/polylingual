@@ -52,7 +52,7 @@ const proxy = ({
 		{},
 		{
 			set() {
-				throw new Error("cannot set values this way");
+				return false;
 			},
 			get(_, key: string | symbol) {
 				if (key === "_code") {
