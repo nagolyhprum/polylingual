@@ -1147,6 +1147,8 @@ ${tabs}\t\t${args.join(`,\n${tabs}\t\t`)}
 ${tabs}\t)
 ${tabs})`;
 	}
+	case "execute":
+		return "";
 	default:
 		// @ts-ignore
 		if(code instanceof Array) {

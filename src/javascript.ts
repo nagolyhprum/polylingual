@@ -293,6 +293,8 @@ ${tabs}}${otherwise}`;
 		const sideEffect = code.sideEffect;
 		return `${sideEffect ? tabs : ""}${target}${target ? "." : ""}${fun}(${args.join(", ")})${sideEffect ? ";" : ""}`;
 	}
+	case "execute":
+		return "";
 	case "not":
 		return `!(${render(code.item, tabs)})`;
 	case "add":

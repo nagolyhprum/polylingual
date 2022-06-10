@@ -448,6 +448,11 @@ const getFromScope = (name: (string | number | symbol)[], scope: any, prop : str
 	}
 };
 
+export const executeOnly = (code : ProgrammingLanguage) => ({
+	name : "execute",
+	code
+});
+
 export const execute = <T>(
 	code: ProgrammingLanguage,
 	scope: T
@@ -759,6 +764,8 @@ const executeWithScope = (
 	case "result": {
 		return new Result(executeWithScope(code.value, scope));
 	}
+	case "execute":
+		return executeWithScope(code.code, scope);
 	default: {
 		const data = code as any;
 		if(data instanceof Array) {

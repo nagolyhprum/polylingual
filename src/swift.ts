@@ -511,6 +511,8 @@ ${body.join("\n")}
 ${tabs}\treturn nil
 ${tabs}}`;
 	}
+	case "execute":
+		return "";
 	case "invoke": {
 		const target = render(code.target, `${tabs}\t`);
 		const fun = code.fun;

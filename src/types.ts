@@ -56,6 +56,9 @@ export type ProgrammingLanguage = ({
     value: ProgrammingLanguage,
     fallback: ProgrammingLanguage
 } | {
+    _name: "execute",
+    code: ProgrammingLanguage
+} | {
     _name: "sub",
     items: ProgrammingLanguage[]
 } | {
