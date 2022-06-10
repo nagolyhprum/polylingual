@@ -451,7 +451,7 @@ const getFromScope = (name: (string | number | symbol)[], scope: any, prop : str
 export const executeOnly = (code : ProgrammingLanguage) => ({
 	name : "execute",
 	code
-});
+}) as unknown as ProgrammingLanguage;
 
 export const execute = <T>(
 	code: ProgrammingLanguage,
