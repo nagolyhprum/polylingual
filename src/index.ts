@@ -39,7 +39,7 @@ export const invoke = ({
 	dependencies : Array.from(dependencies)
 }) as ProgrammingLanguage;
 
-const proxy = ({
+export const proxy = ({
 	scope,
 	path,
 	dependencies
