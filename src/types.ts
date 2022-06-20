@@ -149,7 +149,7 @@ export type ProgrammingFetch = (url: string, config: {
     body?: string
     headers?: Record<string, string>
     method?: "POST" | "GET" | "PUT" | "DELETE" | "PATCH"
-    callback: (config : {
+    callback?: (config : {
         response: {
             status: number
             body: string
@@ -157,6 +157,7 @@ export type ProgrammingFetch = (url: string, config: {
         }
         error: Error
     }) => ProgrammingLanguage
+    credentials?: "omit" | "same-origin" | "include"
 }) => ProgrammingLanguage
 
 export type ProgrammingConsole = {

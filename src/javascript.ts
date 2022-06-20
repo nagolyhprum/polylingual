@@ -208,7 +208,8 @@ var fetch = (function(url, config) {
 		windowFetch(url, {
 			method : config.method,
 			body : config.body,
-			headers : config.headers
+			headers : config.headers,
+			credentials : config.credentials
 		}).then(function(res) {
 			return res.text().then(function(text) {
 				config.callback({
