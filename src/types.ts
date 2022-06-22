@@ -148,7 +148,7 @@ export type ProgrammingJSON = {
 }
 
 export type ProgrammingFetch = (url: string, config: {
-    body?: string
+    body?: Blob | File | string
     headers?: Record<string, string>
     method?: "POST" | "GET" | "PUT" | "DELETE" | "PATCH"
     callback?: (config : {
