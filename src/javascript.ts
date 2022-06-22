@@ -159,6 +159,18 @@ _.toString = function(input) {
 	return "" + input;
 };`
 },{
+	dependency : "_.toInt",
+	code : `
+_.toInt = function(input) {
+	return parseInt(input, 10);
+};`
+},{
+	dependency : "_.toFloat",
+	code : `
+_.toFloat = function(input) {
+	return parseFloat(input);
+};`
+},{
 	dependency : "_.join",
 	code : `
 _.join = function(target, separator) {

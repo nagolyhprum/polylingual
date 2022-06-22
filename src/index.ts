@@ -203,6 +203,8 @@ const getProxy = <T>({
 				toLowerCase: GET_STRING,
 				split: GET_ARRAY,
 				toString: GET_STRING,
+				toInt: GET_NUMBER,
+				toFloat: GET_NUMBER,
 				some: GET_BOOLEAN,
 				every: GET_BOOLEAN,
 				indexOf: () => -1,
@@ -489,6 +491,8 @@ export const execute = <T>(
 						return items.reduce((total, list) => list ? [...total, ...list] : total, [] as T[]);
 					},
 					toString: (input : unknown) => `${input}`,
+					toInt: (input : string) => parseInt(input, 10),
+					toFloat: (input : string) => parseFloat(input),
 					slice: <T>(items : T[], from : number, to : number): T[] => {
 						if(!items) {
 							return [];
