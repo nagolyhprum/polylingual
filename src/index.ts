@@ -193,6 +193,8 @@ const getProxy = <T>({
 				log: GET_VOID
 			},
 			setTimeout: GET_NUMBER,
+			debounce: GET_NUMBER,
+			throttle: GET_NUMBER,
 			parseFloat: GET_NUMBER,
 			socket : {
 				on : GET_VOID

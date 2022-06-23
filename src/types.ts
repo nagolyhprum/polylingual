@@ -140,7 +140,9 @@ export type ProgrammingDate = {
     now: () => number
 }
 
-export type ProgrammingTimeout = (callback: () => ProgrammingLanguage, ms: number) => number
+export type ProgrammingTimeout = (callback: () => ProgrammingLanguage, ms: number) => ProgrammingLanguage
+
+export type ProgrammingNamedTimeout = (key : string, callback: () => ProgrammingLanguage, ms: number) => ProgrammingLanguage
 
 export type ProgrammingJSON = {
     stringify(input: any, replacer? : unknown, space? : string): string
@@ -171,6 +173,8 @@ export type ProgrammingBaseScope = {
 	console: ProgrammingConsole
 	Date: ProgrammingDate
 	setTimeout: ProgrammingTimeout
+	debounce: ProgrammingNamedTimeout
+	throttle: ProgrammingNamedTimeout
 	JSON: ProgrammingJSON
 	_: ProgrammingUnderscore
 	fetch: ProgrammingFetch
