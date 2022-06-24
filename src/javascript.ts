@@ -214,8 +214,8 @@ _.compare = function(a, b) {
 },{
 	dependency : "fetch",
 	code : `
+var windowFetch = fetch;
 var fetch = (function(url, config) {
-	var windowFetch = fetch;
 	return function(url, config) {
 		windowFetch(url, {
 			method : config.method,
