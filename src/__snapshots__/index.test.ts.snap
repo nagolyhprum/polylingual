@@ -748,7 +748,8 @@ if(hasValue(input : not(input : hasValue(input : get(
 `;
 
 exports[`language allows functions to be dot referenced 1`] = `
-"function get() {
+"var Declarations = {};
+Declarations.get = function () {
 	return {
 		name: \\"test\\"
 	};
@@ -756,7 +757,7 @@ exports[`language allows functions to be dot referenced 1`] = `
 _.assign({
 	name: \\"test\\"
 }).name
-_.split(get().name, \\"\\")"
+_.split(Declarations.get().name, \\"\\")"
 `;
 
 exports[`language allows indexing of variables and numbers 1`] = `
@@ -886,16 +887,17 @@ if(!((local.list === \\"\\"))) {
 `;
 
 exports[`language supports function declaration 1`] = `
-"function sideEffect() {
+"var Declarations = {};
+Declarations.sideEffect = function () {
 Date.now()
 }
-function sum(args) {
+Declarations.sum = function (args) {
 	var a = args.a;
 	var b = args.b;
 	return (a + b);
 }
-sideEffect()
-sum({
+Declarations.sideEffect()
+Declarations.sum({
 	a: 1,
 	b: 2
 })"

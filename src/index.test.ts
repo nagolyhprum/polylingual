@@ -707,7 +707,7 @@ describe("language", () => {
 	});
 	it("supports function declaration", () => {
 		const dependencies = new Set([]);
-		const declarations = functions(({
+		const declarations = functions("Declarations", ({
 			Date			
 		}) => ({
 			sideEffect : () => block([
@@ -727,10 +727,11 @@ describe("language", () => {
 			declarations.sum({ a : 1, b : 2 })
 		]), dependencies);		
 		expect(javascript(output, "")).toMatchSnapshot();
+		execute(output, {});
 	});
 	it("allows functions to be dot referenced", () => {		
 		const dependencies = new Set([]);
-		const declarations = functions(() => ({
+		const declarations = functions("Declarations", () => ({
 			get : () => result({
 				name : "test"
 			}) as {
@@ -747,23 +748,17 @@ describe("language", () => {
 			_.split(declarations.get().name, "")
 		]), dependencies);		
 		expect(javascript(output, "")).toMatchSnapshot();
+		execute(output, {});
 	});
 	it("supports regexp", () => {	
 		const dependencies = new Set([]);
-		const declarations = functions(() => ({
-			get : () => result({
-				name : "test"
-			}) as {
-				name : string
-			}
-		}), {});
 		const output = code(({
 			_
 		}) => block([
 			_.split("", /this is a test/g)
 		]), dependencies);		
 		expect(javascript(output, "")).toMatchSnapshot();
-		
+		execute(output, {});	
 	});
 });
 

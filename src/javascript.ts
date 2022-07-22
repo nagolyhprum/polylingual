@@ -337,7 +337,7 @@ ${tabs}}${otherwise}`;
 			...code.args.map(it => `${tabs}\tvar ${it} = args.${it};`),
 			render(code.body, `${tabs}\t`)
 		];
-		return `function ${code.name}(${code.args.length ? "args" : ""}) {
+		return `${code.name ? `${code.name} = ` : ""}function (${code.args.length ? "args" : ""}) {
 ${body.join("\n")}
 ${tabs}}`;
 	}

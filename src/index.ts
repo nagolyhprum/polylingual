@@ -440,8 +440,8 @@ const getFromScope = (name: (string | number | symbol)[], scope: any, prop : str
 	}
 	for (let i = scope.length - 1; i >= 0; i--) {
 		// @ts-ignore
-		if (name[0] in scope[i]) {
-			let value = scope[i][name[0]];
+		if (typeof name[0] === "object" || name[0] in scope[i]) {
+			let value = typeof name[0] === "object" ? name[0] : scope[i][name[0]];
 			for (let j = 1; j < name.length; j++) {
 				if(value != null && value !== undefined) {
 					value = value[name[j]];
@@ -726,7 +726,7 @@ const executeWithScope = (
 			// @ts-ignore
 			return target[prop](...args);
 		}
-		console.warn("unimplemented functionality", target, prop, args);
+		console.warn("unimplemented functionality", code, target, prop, args);
 		return null;
 	}
 	case "add": {
@@ -766,12 +766,17 @@ const executeWithScope = (
 		return !executeWithScope(code.item, scope);
 	}
 	case "fun": {
-		return (args: any) => {
-			const result = executeWithScope(code.body, [...scope, args]);
+		const fun = (args: any) => {
+			const result = executeWithScope(code.body, [...scope, args || {}]);
 			if(result instanceof Result) {
 				return result.value;
 			}
 		};
+		if(code.name) {
+			const [global, name] = code.name.split(".");
+			scope[scope.length - 1][global][name] = fun;
+		}
+		return fun;
 	}
 	case "fallback": {
 		return executeWithScope(code.value, scope) ?? executeWithScope(code.fallback, scope);
@@ -812,6 +817,7 @@ export {
 
 
 export const functions = <T, ExtendedScope>(
+	name : string,
 	functions : (
 		scope : ProgrammingBaseScope & ExtendedScope
 	) => T, 
@@ -823,7 +829,9 @@ export const functions = <T, ExtendedScope>(
 	const ret : any = () => {
 		const declare = {
 			_name: "declare",
-			variables: {},
+			variables: {
+				[name] : {}
+			},
 			body: [] as any
 		};
 		Object.keys(funcs).forEach(key => {
@@ -831,7 +839,7 @@ export const functions = <T, ExtendedScope>(
 			declare.body.push({
 				_name: "fun",
 				body: func.body,
-				name : key,
+				name : `${name}.${key}`,
 				args : Array.from(func.args)
 			});
 		});
@@ -850,7 +858,10 @@ export const functions = <T, ExtendedScope>(
 				args : args ? [args] : [],
 				fun : key,
 				sideEffect: false,
-				target: undefined,
+				target: {
+					_name: "get",
+					variable: [name]
+				},
 				dependencies
 			});
 			return proxy({
