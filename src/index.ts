@@ -69,7 +69,11 @@ export const proxy = ({
 				if(nextPath.every(it => ["string", "number"].includes(typeof it))) {
 					dependencies.add(nextPath.join("."));
 				}
-				if (typeof prop === "function") {
+				if (
+					typeof prop === "function" ||
+					key.toString().match(/^on[A-Z]/) ||
+					key === "callback"
+				) {
 					return (...args: unknown[]) => {
 						const result = prop.call(scope);
 						const wrapped = wrapResult(result) as {
