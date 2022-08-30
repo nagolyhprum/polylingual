@@ -835,6 +835,18 @@ exports[`language passes functions to objects 1`] = `
 });"
 `;
 
+exports[`language support function names 1`] = `
+"var Api = {};
+Api.doSomething = function (args) {
+	var callback = args.callback;
+	var onSuccess = args.onSuccess;
+callback()
+onSuccess({
+		error: false
+	})
+}"
+`;
+
 exports[`language support modified chaining 1`] = `
 "var number = 0, key = \\"\\";
 number = Math.random();

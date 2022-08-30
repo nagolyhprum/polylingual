@@ -75,7 +75,7 @@ export const proxy = ({
 					key === "callback"
 				) {
 					return (...args: unknown[]) => {
-						const result = prop.call(scope);
+						const result = typeof prop === "function" ? prop.call(scope) : null;
 						const wrapped = wrapResult(result) as {
 							_code: unknown
 						};
