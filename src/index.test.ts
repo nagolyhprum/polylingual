@@ -765,24 +765,17 @@ describe("language", () => {
 		const dependencies = new Set([]);
 		const Api = functions("Api", () => ({
 			doSomething : (config : {
-				callback : () => ProgrammingLanguage
 				onSuccess : (config : {
 					error : boolean
 				}) => ProgrammingLanguage
 			}) => block([
-				config.callback(),
 				config.onSuccess({
 					error : false
 				})
 			])
 		}), {});
-		const output = code(({
-			_
-		}) => block([
-			Api()
-		]), dependencies);		
+		const output = code(() => Api(), dependencies);		
 		expect(javascript(output, "")).toMatchSnapshot();
-		execute(output, {});	
 	});
 });
 

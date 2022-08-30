@@ -838,9 +838,7 @@ exports[`language passes functions to objects 1`] = `
 exports[`language support function names 1`] = `
 "var Api = {};
 Api.doSomething = function (args) {
-	var callback = args.callback;
 	var onSuccess = args.onSuccess;
-callback()
 onSuccess({
 		error: false
 	})

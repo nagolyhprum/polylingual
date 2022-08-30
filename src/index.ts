@@ -71,8 +71,7 @@ export const proxy = ({
 				}
 				if (
 					typeof prop === "function" ||
-					key.toString().match(/^on[A-Z]/) ||
-					key === "callback"
+					key.toString().match(/^on[A-Z]/)
 				) {
 					return (...args: unknown[]) => {
 						const result = typeof prop === "function" ? prop.call(scope) : null;
