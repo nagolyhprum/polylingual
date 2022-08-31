@@ -202,6 +202,7 @@ const getProxy = <T>({
 			socket : {
 				on : GET_VOID
 			},
+			promise : GET_OBJECT,
 			_: {
 				join: GET_STRING,
 				keys: GET_ARRAY,
@@ -482,6 +483,13 @@ export const execute = <T>(
 						// DO NOTHING
 					}
 				},
+				promise : (callback : (config : {
+					resolve : (result : T) => void
+					reject : (error : Error) => void
+				}) => void) => new Promise((resolve, reject) => callback({
+					resolve,
+					reject
+				})),
 				_: {
 					join: (target : unknown[], separator : string) => target.join(separator),
 					keys: <T>(input : T) : Array<keyof T> => Object.keys(input) as Array<keyof T>,
