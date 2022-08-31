@@ -484,11 +484,11 @@ export const execute = <T>(
 					}
 				},
 				promise : (callback : (config : {
-					resolve : (result : T) => void
-					reject : (error : Error) => void
-				}) => void) => new Promise((resolve, reject) => callback({
-					resolve,
-					reject
+					onResolve : (result : T) => void
+					onReject : (error : Error) => void
+				}) => void) => new Promise((onResolve, onReject) => callback({
+					onResolve,
+					onReject
 				})),
 				_: {
 					join: (target : unknown[], separator : string) => target.join(separator),

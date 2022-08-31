@@ -179,7 +179,7 @@ export type ProgrammingBaseScope = {
 	_: ProgrammingUnderscore
 	fetch: ProgrammingFetch
     promise : <T>(callback : (config : {
-        resolve : (result : T) => ProgrammingLanguage
-        reject : (error : Error) => ProgrammingLanguage
+        onResolve : (result : T) => ProgrammingLanguage
+        onReject : (error : Error) => ProgrammingLanguage
     }) => void) => Promise<T>
 }
