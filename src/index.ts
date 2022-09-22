@@ -2,6 +2,16 @@
 
 import { ProgrammingBaseScope, ProgrammingDate, ProgrammingLanguage } from "./types";
 
+export const when = (value : string) => (input : Record<string, ProgrammingLanguage>) : ProgrammingLanguage => {
+	return Object.keys(input).reduce(
+		(code, key) => condition(
+			eq(key, value),
+			input[key],
+		).otherwise(code), 
+		block([]),
+	);
+};
+
 const wrapResult = (result: unknown): unknown => {
 	if(typeof result === "string") {
 		return new String(result);
